@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Đăng nhập hoặc đăng ký tài khoản PC Gear Store.">
+  <title>Đăng nhập | PC Gear Store</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-left">
+        <span><i class="fa-solid fa-fire text-accent"></i> Freeship đơn từ 10 triệu</span>
+        <span class="topbar-divider"></span>
+        <span><i class="fa-solid fa-laptop"></i> Tư vấn build PC miễn phí</span>
+      </div>
+      <div class="topbar-right">
+        <a href="blog.html"><i class="fa-solid fa-book-open"></i> Blog & Hướng dẫn</a>
+        <span class="topbar-divider"></span>
+        <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-main">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">PG</div>
+          <div class="logo-text">
+            <div class="logo-name">PC Gear Store</div>
+            <div class="logo-tagline">Linh kiện PC & Gaming</div>
+          </div>
+        </a>
+
+        <div class="search-bar">
+          <input type="search" placeholder="Tìm kiếm CPU, GPU, RAM, SSD..." data-global-search>
+          <button type="button" aria-label="icon" onclick="handleGlobalSearch()"><i
+              class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="header-actions">
+          <a class="header-action" href="wishlist.html" id="header-wishlist-link">
+            <span class="icon"><i class="fa-regular fa-heart"></i></span><span class="label">Yêu thích</span>
+            <span class="badge-count" data-wishlist-count>0</span>
+          </a>
+          <a class="header-action" href="cart.html">
+            <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="label">Giỏ hàng</span>
+            <span class="badge-count" data-cart-count>0</span>
+          </a>
+          <a class="header-action" href="login.html">
+            <span class="icon"><i class="fa-solid fa-user"></i></span><span class="label">Tài khoản</span>
+          </a>
+          <div class="header-hotline">
+            <span class="icon"><i class="fa-solid fa-phone"></i></span>
+            <div class="info">
+              <small>Hotline</small>
+              <strong>1900 9999</strong>
+            </div>
+          </div>
+          <button class="menu-toggle" aria-label="Menu" onclick="toggleMobileMenu()">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <ul class="nav-list" id="nav-list">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Linh kiện PC <i class="fa-solid fa-chevron-down"
+                style="font-size:10px"></i></a>
+            <div class="mega-menu" id="mega-menu-pc">
+              <!-- Populated by JS -->
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html?category=Monitor">Màn hình</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html?category=Mouse">Chuột & Bàn phím <i class="fa-solid fa-chevron-down"
+                style="font-size:10px"></i></a>
+            <div class="mega-menu">
+              <a href="products.html?category=Mouse"><i class="fa-solid fa-computer-mouse"></i> Chuột gaming</a>
+              <a href="products.html?category=Keyboard"><i class="fa-solid fa-keyboard"></i> Bàn phím cơ</a>
+              <a href="products.html?category=Headset"><i class="fa-solid fa-headphones"></i> Tai nghe</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="blog.html">Blog & HDSD</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1>PC Gear Store</h1>
+      <p class="auth-subtitle">Đăng nhập hoặc tạo tài khoản để mua sắm</p>
+
+      <div class="auth-tabs">
+        <button class="active" data-tab="login">Đăng nhập</button>
+        <button data-tab="register">Đăng ký</button>
+      </div>
+
+      <form class="auth-form active" data-auth-form="login">
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-input" type="email" placeholder="example@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input class="form-input" type="password" placeholder="Nhập mật khẩu" required>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox"> Ghi nhớ đăng nhập
+          </label>
+          <a href="#" style="color:var(--primary);font-weight:600">Quên mật khẩu?</a>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full">Đăng nhập</button>
+        <p class="auth-note">Demo frontend: chưa kết nối backend PHP session.</p>
+      </form>
+
+      <form class="auth-form" data-auth-form="register">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input class="form-input" type="text" placeholder="Nguyễn Văn A" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-input" type="email" placeholder="example@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input class="form-input" type="tel" placeholder="0912 345 678">
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input class="form-input" type="password" placeholder="Tối thiểu 6 ký tự" required>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full">Tạo tài khoản</button>
+        <p class="auth-note">Sau này form sẽ insert vào bảng users MySQL.</p>
+      </form>
+
+      <div class="auth-divider">hoặc</div>
+      <div class="social-login">
+        <button type="button" onclick="showToast('Demo: Đăng nhập Google')">Google</button>
+        <button type="button" onclick="showToast('Demo: Đăng nhập Facebook')">Facebook</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">PG</div>
+          <div class="logo-text">
+            <div class="logo-name">PC Gear Store</div>
+            <div class="logo-tagline">Linh kiện PC & Gaming</div>
+          </div>
+        </a>
+        <p>Website bán linh kiện PC chính hãng. Tư vấn build PC miễn phí, giao hàng toàn quốc.</p>
+        <div class="footer-contact">
+          <span>47 Võ Oanh, phường Thạnh Mỹ Tây, quận Bình Thạnh, TP. HCM</span>
+          <a href="tel:19009999">Hotline: 1900 9999</a>
+          <a href="mailto:info@pcgearstore.vn">info@pcgearstore.vn</a>
+        </div>
+      </div>
+      <div>
+        <h4>Danh mục</h4>
+        <div class="footer-links">
+          <a href="products.html?category=CPU">CPU - Bộ xử lý</a>
+          <a href="products.html?category=GPU">GPU - Card đồ họa</a>
+          <a href="products.html?category=RAM">RAM - Bộ nhớ</a>
+          <a href="products.html?category=SSD">SSD - Ổ cứng</a>
+          <a href="products.html?category=Monitor">Màn hình</a>
+        </div>
+      </div>
+      <div>
+        <h4>Chính sách</h4>
+        <div class="footer-links">
+          <a href="#">Chính sách bảo mật</a>
+          <a href="#">Vận chuyển & Kiểm tra hàng</a>
+          <a href="#">Bảo hành & Đổi trả</a>
+          <a href="#">Chính sách thanh toán</a>
+          <a href="#">Liên hệ hỗ trợ</a>
+        </div>
+      </div>
+      <div class="footer-newsletter">
+        <h4>Nhận tin khuyến mãi</h4>
+        <p>Đăng ký email để nhận thông tin deal sốc và sản phẩm mới nhất.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Đăng ký thành công!')">
+          <input type="email" placeholder="Nhập email của bạn" required>
+          <button type="submit">Đăng ký</button>
+        </form>
+        <div class="social-links">
+          <a class="social-link" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a class="social-link" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a class="social-link" href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a class="social-link" href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span>© 2026 PC Gear Store. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="products.html">Sản phẩm</a>
+          <a href="blog.html">Blog</a>
+          <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+          <a href="login.html">Tài khoản</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+
+</html>

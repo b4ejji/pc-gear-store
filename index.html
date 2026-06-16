@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PC Gear Store - Website bán linh kiện PC chính hãng. CPU, GPU, RAM, SSD, nguồn, case, tản nhiệt, màn hình, chuột, bàn phím gaming. Giao hàng toàn quốc.">
+  <title>PC Gear Store | Linh kiện PC & Gaming chính hãng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-left">
+        <span><i class="fa-solid fa-fire text-accent"></i> Freeship đơn từ 10 triệu</span>
+        <span class="topbar-divider"></span>
+        <span><i class="fa-solid fa-laptop"></i> Tư vấn build PC miễn phí</span>
+      </div>
+      <div class="topbar-right">
+        <a href="blog.html"><i class="fa-solid fa-book-open"></i> Blog & Hướng dẫn</a>
+        <span class="topbar-divider"></span>
+        <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header-main">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">PG</div>
+          <div class="logo-text">
+            <div class="logo-name">PC Gear Store</div>
+            <div class="logo-tagline">Linh kiện PC & Gaming</div>
+          </div>
+        </a>
+
+        <div class="search-bar">
+          <input type="search" placeholder="Tìm kiếm CPU, GPU, RAM, SSD..." data-global-search>
+          <button type="button" aria-label="icon" onclick="handleGlobalSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="header-actions">
+          <a class="header-action" href="wishlist.html" id="header-wishlist-link">
+            <span class="icon"><i class="fa-regular fa-heart"></i></span><span class="label">Yêu thích</span>
+            <span class="badge-count" data-wishlist-count>0</span>
+          </a>
+          <a class="header-action" href="cart.html">
+            <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="label">Giỏ hàng</span>
+            <span class="badge-count" data-cart-count>0</span>
+          </a>
+          <a class="header-action" href="login.html">
+            <span class="icon"><i class="fa-solid fa-user"></i></span><span class="label">Tài khoản</span>
+          </a>
+          <div class="header-hotline">
+            <span class="icon"><i class="fa-solid fa-phone"></i></span>
+            <div class="info">
+              <small>Hotline</small>
+              <strong>1900 9999</strong>
+            </div>
+          </div>
+          <button class="menu-toggle" aria-label="Menu" onclick="toggleMobileMenu()">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <ul class="nav-list" id="nav-list">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">Linh kiện PC <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+            <div class="mega-menu" id="mega-menu-pc">
+              <!-- Populated by JS -->
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html?category=Monitor">Màn hình</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html?category=Mouse">Chuột & Bàn phím <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></a>
+            <div class="mega-menu">
+              <a href="products.html?category=Mouse"><i class="fa-solid fa-computer-mouse"></i> Chuột gaming</a>
+              <a href="products.html?category=Keyboard"><i class="fa-solid fa-keyboard"></i> Bàn phím cơ</a>
+              <a href="products.html?category=Headset"><i class="fa-solid fa-headphones"></i> Tai nghe</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="blog.html">Blog & HDSD</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Slider -->
+    <section class="hero-slider" id="hero-slider">
+      <div class="slider-track" id="slider-track">
+        <div class="slider-slide" style="background: linear-gradient(135deg, #f0f4f8, #e2e8f0)">
+          <div class="slider-content">
+            <span class="slider-eyebrow">NEW ARRIVAL 2026</span>
+            <h1 class="slider-title">Build PC mạnh,<br>giá <span class="highlight">căng đét</span>.</h1>
+            <p class="slider-desc">Linh kiện PC chính hãng với CPU, GPU, RAM, SSD mới nhất. Tư vấn build PC miễn phí theo ngân sách.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="products.html">Mua linh kiện ngay <i class="fa-solid fa-bolt"></i></a>
+              <a class="btn btn-outline btn-lg" href="blog.html">Xem hướng dẫn</a>
+            </div>
+          </div>
+          <div class="slider-image">
+            <img src="assets/img/gpu.svg" alt="PC Gaming Build">
+          </div>
+        </div>
+        <div class="slider-slide" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff)">
+          <div class="slider-content">
+            <span class="slider-eyebrow">GAMING GEAR</span>
+            <h1 class="slider-title">Chuột & Bàn phím<br><span class="highlight">Pro Gaming</span></h1>
+            <p class="slider-desc">Thiết bị ngoại vi gaming từ Logitech, Razer, Akko. Polling rate lên đến 8K Hz.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="products.html?category=Mouse">Xem ngay <i class="fa-solid fa-gamepad"></i></a>
+            </div>
+          </div>
+          <div class="slider-image">
+            <img src="assets/img/mainboard.svg" alt="Gaming Peripherals">
+          </div>
+        </div>
+        <div class="slider-slide" style="background: linear-gradient(135deg, #fef3cd, #fde68a)">
+          <div class="slider-content">
+            <span class="slider-eyebrow">DEAL SỐC</span>
+            <h1 class="slider-title">Giảm đến <span class="highlight">26%</span><br>linh kiện PC</h1>
+            <p class="slider-desc">Chương trình khuyến mãi lớn nhất năm. SSD, RAM, Tản nhiệt giảm sốc chỉ trong tuần này!</p>
+            <div class="hero-actions">
+              <a class="btn btn-danger btn-lg" href="products.html">Xem deal ngay <i class="fa-solid fa-fire text-accent"></i></a>
+            </div>
+          </div>
+          <div class="slider-image">
+            <img src="assets/img/ssd.svg" alt="Flash Sale">
+          </div>
+        </div>
+      </div>
+      <button class="slider-arrow slider-prev" aria-label="Trang trước" onclick="slideHero(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slider-arrow slider-next" aria-label="Trang sau" onclick="slideHero(1)"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="slider-dots" id="slider-dots"></div>
+    </section>
+
+    <!-- Quick Categories -->
+    <section class="section">
+      <div class="container">
+        <div class="category-quick" data-category-quick></div>
+      </div>
+    </section>
+
+    <!-- Category Grid -->
+    <section class="section section-alt" id="categories">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Danh mục linh kiện</h2>
+            <p>Lựa chọn từng nhóm sản phẩm phù hợp nhu cầu</p>
+          </div>
+          <a class="section-link" href="products.html">Xem tất cả </a>
+        </div>
+        <div class="category-grid" data-category-grid></div>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Sản phẩm nổi bật</h2>
+            <p>Được khách hàng tin dùng và đánh giá cao nhất</p>
+          </div>
+          <a class="section-link" href="products.html">Tất cả sản phẩm </a>
+        </div>
+        <div class="product-grid" data-featured-products></div>
+      </div>
+    </section>
+
+    <!-- Deal Section -->
+    <section class="deal-section">
+      <div class="container">
+        <div class="deal-header">
+          <h2>Deal Sốc Hôm Nay</h2>
+          <div class="countdown" id="countdown">
+            <div class="countdown-item"><span class="num" data-hours>08</span><span class="unit">Giờ</span></div>
+            <div class="countdown-item"><span class="num" data-minutes>45</span><span class="unit">Phút</span></div>
+            <div class="countdown-item"><span class="num" data-seconds>30</span><span class="unit">Giây</span></div>
+          </div>
+        </div>
+        <div class="deal-grid product-grid" data-deal-products></div>
+      </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="section">
+      <div class="container">
+        <div class="promo-banner">
+          <div>
+            <h2>Không biết chọn linh kiện?<br>PC Gear tư vấn miễn phí!</h2>
+            <p>Gửi ngân sách, nhận combo CPU + GPU + RAM + SSD phù hợp. Đội ngũ kỹ thuật viên giàu kinh nghiệm sẵn sàng hỗ trợ 24/7.</p>
+            <a class="btn btn-accent btn-lg" href="products.html">Xem combo build PC </a>
+          </div>
+          <div style="text-align:center;font-size:80px;opacity:0.3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest Blog -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Blog & Hướng dẫn</h2>
+            <p>Kiến thức build PC, review linh kiện và mẹo hay</p>
+          </div>
+          <a class="section-link" href="blog.html">Xem tất cả bài viết </a>
+        </div>
+        <div class="blog-grid" data-blog-latest></div>
+      </div>
+    </section>
+
+    <!-- Brands -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2>Thương hiệu chính hãng</h2>
+            <p>Đối tác phân phối ủy quyền tại Việt Nam</p>
+          </div>
+        </div>
+        <div class="brand-grid" data-brands></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">PG</div>
+          <div class="logo-text">
+            <div class="logo-name">PC Gear Store</div>
+            <div class="logo-tagline">Linh kiện PC & Gaming</div>
+          </div>
+        </a>
+        <p>Website bán linh kiện PC chính hãng. Tư vấn build PC miễn phí, giao hàng toàn quốc.</p>
+        <div class="footer-contact">
+          <span>47 Võ Oanh, phường Thạnh Mỹ Tây, quận Bình Thạnh, TP. HCM</span>
+          <a href="tel:19009999">Hotline: 1900 9999</a>
+          <a href="mailto:info@pcgearstore.vn">info@pcgearstore.vn</a>
+        </div>
+      </div>
+      <div>
+        <h4>Danh mục</h4>
+        <div class="footer-links">
+          <a href="products.html?category=CPU">CPU - Bộ xử lý</a>
+          <a href="products.html?category=GPU">GPU - Card đồ họa</a>
+          <a href="products.html?category=RAM">RAM - Bộ nhớ</a>
+          <a href="products.html?category=SSD">SSD - Ổ cứng</a>
+          <a href="products.html?category=Monitor">Màn hình</a>
+        </div>
+      </div>
+      <div>
+        <h4>Chính sách</h4>
+        <div class="footer-links">
+          <a href="#">Chính sách bảo mật</a>
+          <a href="#">Vận chuyển & Kiểm tra hàng</a>
+          <a href="#">Bảo hành & Đổi trả</a>
+          <a href="#">Chính sách thanh toán</a>
+          <a href="#">Liên hệ hỗ trợ</a>
+        </div>
+      </div>
+      <div class="footer-newsletter">
+        <h4>Nhận tin khuyến mãi</h4>
+        <p>Đăng ký email để nhận thông tin deal sốc và sản phẩm mới nhất.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Đăng ký thành công!')">
+          <input type="email" placeholder="Nhập email của bạn" required>
+          <button type="submit">Đăng ký</button>
+        </form>
+        <div class="social-links">
+          <a class="social-link" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a class="social-link" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a class="social-link" href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a class="social-link" href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span>© 2026 PC Gear Store. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="products.html">Sản phẩm</a>
+          <a href="blog.html">Blog</a>
+          <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+          <a href="login.html">Tài khoản</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top -->
+  <button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"></button>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
