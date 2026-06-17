@@ -61,6 +61,13 @@ CREATE TABLE products (
   is_active TINYINT(1) DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_products_filter (category_id, brand_id, is_active),
+  KEY idx_products_price (price),
+  KEY idx_products_rating (rating),
+  FULLTEXT KEY ft_products_search (name, spec_short, description),
+  CONSTRAINT chk_products_price CHECK (price > 0),
+  CONSTRAINT chk_products_old_price CHECK (old_price IS NULL OR old_price >= price),
+  CONSTRAINT chk_products_rating CHECK (rating BETWEEN 0 AND 5),
   FOREIGN KEY (category_id) REFERENCES categories(id) ON UPDATE CASCADE,
   FOREIGN KEY (brand_id) REFERENCES brands(id) ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -81,6 +88,7 @@ CREATE TABLE product_specs (
   spec_key VARCHAR(50) NOT NULL,
   spec_value VARCHAR(200) NOT NULL,
   sort_order INT DEFAULT 0,
+  KEY idx_product_specs_lookup (spec_key, spec_value),
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
@@ -91,6 +99,7 @@ CREATE TABLE cart_items (
   product_id INT NOT NULL,
   quantity INT UNSIGNED DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT chk_cart_quantity CHECK (quantity > 0),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   UNIQUE KEY uq_cart (user_id, product_id)
@@ -118,7 +127,10 @@ CREATE TABLE coupons (
   used_count INT DEFAULT 0,
   valid_from DATE NOT NULL,
   valid_to DATE NOT NULL,
-  is_active TINYINT(1) DEFAULT 1
+  is_active TINYINT(1) DEFAULT 1,
+  CONSTRAINT chk_coupon_percent CHECK (discount_percent BETWEEN 0 AND 100),
+  CONSTRAINT chk_coupon_usage CHECK (usage_limit IS NULL OR usage_limit >= 0),
+  CONSTRAINT chk_coupon_dates CHECK (valid_to >= valid_from)
 ) ENGINE=InnoDB;
 
 -- orders
@@ -139,8 +151,24 @@ CREATE TABLE orders (
   note TEXT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_orders_user_created (user_id, created_at),
+  KEY idx_orders_status (status),
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (coupon_id) REFERENCES coupons(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- coupon_usages
+CREATE TABLE coupon_usages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  coupon_id INT NOT NULL,
+  user_id INT NOT NULL,
+  order_id INT NOT NULL,
+  used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_coupon_order (coupon_id, order_id),
+  KEY idx_coupon_usages_user (user_id, used_at),
+  FOREIGN KEY (coupon_id) REFERENCES coupons(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- order_items
@@ -151,6 +179,8 @@ CREATE TABLE order_items (
   product_name VARCHAR(200) NOT NULL,
   price INT UNSIGNED NOT NULL,
   quantity INT UNSIGNED NOT NULL,
+  KEY idx_order_items_product (product_id),
+  CONSTRAINT chk_order_item_quantity CHECK (quantity > 0),
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products(id)
 ) ENGINE=InnoDB;
@@ -165,6 +195,9 @@ CREATE TABLE reviews (
   comment TEXT DEFAULT NULL,
   is_approved TINYINT(1) DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_reviews_product_approved (product_id, is_approved),
+  KEY idx_reviews_user (user_id),
+  CONSTRAINT chk_reviews_rating CHECK (rating BETWEEN 1 AND 5),
   FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
@@ -184,6 +217,8 @@ CREATE TABLE blog_posts (
   is_published TINYINT(1) DEFAULT 0,
   published_at TIMESTAMP NULL DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_blog_posts_published (is_published, published_at),
+  FULLTEXT KEY ft_blog_posts_search (title, excerpt, content),
   FOREIGN KEY (author_id) REFERENCES users(id)
 ) ENGINE=InnoDB;
 

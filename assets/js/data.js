@@ -180,89 +180,89 @@ const DEFAULT_PRODUCTS = [
   // Monitor
   {
     id: 17, name: 'LG 27GP850-B 27" 2K 165Hz', category: 'Monitor', brand: 'LG',
-    price: 7990000, oldPrice: 8990000, image: 'assets/img/cpu.svg',
+    price: 7990000, oldPrice: 8990000, image: 'assets/img/monitor.svg',
     badge: 'hot', badgeText: 'Hot',
     spec: '27" IPS Nano, 2K, 165Hz, 1ms',
     desc: 'Màn hình gaming 2K IPS Nano, tốc độ phản hồi 1ms, HDR400. Chuẩn cho game thủ.',
     stock: 7, rating: 4.7, reviews: 134,
     specs: { 'Kích thước': '27 inch', 'Độ phân giải': '2560x1440 (2K)', 'Tấm nền': 'IPS Nano', 'Tần số': '165Hz (OC 180Hz)', 'Thời gian PH': '1ms GtG', 'HDR': 'HDR400', 'Cổng': '1x HDMI 2.0, 1x DP 1.4, 2x USB 3.0', 'FreeSync/G-Sync': 'G-Sync Compatible' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/monitor.svg']
   },
   {
     id: 18, name: 'Kuycon P27L 27" 4K IPS 60Hz', category: 'Monitor', brand: 'Kuycon',
-    price: 6300000, oldPrice: 6900000, image: 'assets/img/cpu.svg',
+    price: 6300000, oldPrice: 6900000, image: 'assets/img/monitor.svg',
     badge: 'new', badgeText: 'Mới',
     spec: '27" 4K IPS, 60Hz, 99% sRGB',
     desc: 'Màn hình 4K sắc nét cho đồ họa, thiết kế và xem phim. Tấm nền IPS góc nhìn rộng.',
     stock: 5, rating: 4.5, reviews: 42,
     specs: { 'Kích thước': '27 inch', 'Độ phân giải': '3840x2160 (4K)', 'Tấm nền': 'IPS', 'Tần số': '60Hz', 'Thời gian PH': '5ms', 'Màu sắc': '99% sRGB, 95% DCI-P3', 'Cổng': '1x HDMI 2.0, 1x DP 1.2, USB-C', 'Chân đế': 'Xoay, nghiêng, nâng hạ' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/monitor.svg']
   },
 
   // Mouse
   {
     id: 19, name: 'Logitech G Pro X Superlight 2', category: 'Mouse', brand: 'Logitech',
-    price: 2890000, oldPrice: 3290000, image: 'assets/img/cpu.svg',
+    price: 2890000, oldPrice: 3290000, image: 'assets/img/mouse.svg',
     badge: 'bestseller', badgeText: 'Best Seller',
     spec: 'Wireless, 60g, 32K DPI, 95h pin',
     desc: 'Chuột gaming không dây nhẹ nhất thế giới, sensor HERO 2 32K. Lựa chọn của pro players.',
     stock: 13, rating: 4.9, reviews: 267,
     specs: { 'Kết nối': 'Wireless (LIGHTSPEED)', 'Sensor': 'HERO 2 (32K DPI)', 'Trọng lượng': '60g', 'Polling Rate': '2000 Hz (4K optional)', 'Pin': '95 giờ', 'Nút': '5 nút', 'Switch': 'LIGHTFORCE Hybrid', 'Grip': 'Claw / Fingertip' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/mouse.svg']
   },
   {
     id: 20, name: 'Razer Viper V3 Pro', category: 'Mouse', brand: 'Razer',
-    price: 3490000, oldPrice: 3890000, image: 'assets/img/cpu.svg',
+    price: 3490000, oldPrice: 3890000, image: 'assets/img/mouse.svg',
     badge: 'new', badgeText: 'Mới',
     spec: 'Wireless, 54g, 35K DPI, 8K Hz',
     desc: 'Chuột eSports đỉnh cao với polling rate 8000Hz, siêu nhẹ 54g.',
     stock: 8, rating: 4.8, reviews: 89,
     specs: { 'Kết nối': 'Wireless (HyperSpeed)', 'Sensor': 'Focus Pro 35K Gen-2', 'Trọng lượng': '54g', 'Polling Rate': '8000 Hz', 'Pin': '90 giờ', 'Nút': '6 nút', 'Switch': 'Gen-3 Optical', 'Grip': 'Claw / Fingertip' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/mouse.svg']
   },
 
   // Keyboard
   {
     id: 21, name: 'Akko 5075B Plus V2', category: 'Keyboard', brand: 'Akko',
-    price: 1390000, oldPrice: 1590000, image: 'assets/img/cpu.svg',
+    price: 1390000, oldPrice: 1590000, image: 'assets/img/keyboard.svg',
     badge: 'bestseller', badgeText: 'Best Seller',
     spec: '75% Wireless, Hot-swap, Gasket Mount',
     desc: 'Bàn phím cơ 75% wireless, gasket mount êm ái. Hot-swap switch dễ dàng tùy biến.',
     stock: 19, rating: 4.6, reviews: 156,
     specs: { 'Layout': '75% (82 phím)', 'Kết nối': 'Bluetooth 5.0 / 2.4G / USB-C', 'Switch': 'Cream Yellow V3 (Linear)', 'Mounting': 'Gasket Mount', 'Hot-swap': 'Có (5-pin)', 'Keycap': 'PBT Double-shot', 'Pin': '3000mAh (100h)', 'Foam': 'IXPE + PE Foam' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/keyboard.svg']
   },
   {
     id: 22, name: 'Razer BlackWidow V4 75%', category: 'Keyboard', brand: 'Razer',
-    price: 3690000, oldPrice: 3990000, image: 'assets/img/cpu.svg',
+    price: 3690000, oldPrice: 3990000, image: 'assets/img/keyboard.svg',
     badge: 'new', badgeText: 'Mới',
     spec: '75% Razer Switch, RGB, Hot-swap',
     desc: 'Bàn phím gaming cao cấp với switch Razer Orange V4, âm thanh thock đặc trưng.',
     stock: 7, rating: 4.7, reviews: 45,
     specs: { 'Layout': '75% (84 phím)', 'Kết nối': 'USB-C', 'Switch': 'Razer Orange Tactile V4', 'Mounting': 'Gasket', 'Hot-swap': 'Có', 'Keycap': 'PBT Double-shot', 'Backlight': 'Razer Chroma RGB', 'Đặc biệt': 'Knob xoay + Media keys' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/keyboard.svg']
   },
 
   // Headset
   {
     id: 23, name: 'HyperX Cloud III Wireless', category: 'Headset', brand: 'HyperX',
-    price: 2790000, oldPrice: 3190000, image: 'assets/img/cpu.svg',
+    price: 2790000, oldPrice: 3190000, image: 'assets/img/headset.svg',
     badge: 'hot', badgeText: 'Hot',
     spec: 'Wireless, DTS Headphone:X, 120h pin',
     desc: 'Tai nghe gaming không dây với DTS Headphone:X Spatial Audio, pin 120h siêu trâu.',
     stock: 11, rating: 4.7, reviews: 98,
     specs: { 'Kết nối': 'Wireless 2.4GHz / 3.5mm', 'Driver': '53mm Angled', 'Tần số': '10Hz - 21kHz', 'Trở kháng': '64Ω', 'Microphone': 'Detachable (tháo rời)', 'Âm thanh': 'DTS Headphone:X', 'Pin': '120 giờ', 'Trọng lượng': '330g' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/headset.svg']
   },
   {
     id: 24, name: 'SteelSeries Arctis Nova Pro', category: 'Headset', brand: 'SteelSeries',
-    price: 5490000, oldPrice: 5990000, image: 'assets/img/cpu.svg',
+    price: 5490000, oldPrice: 5990000, image: 'assets/img/headset.svg',
     badge: 'sale', badgeText: '-8%',
     spec: 'Wireless, ANC, Hi-Res, Dual Battery',
     desc: 'Tai nghe gaming flagship với ANC chủ động, âm thanh Hi-Res. Hệ thống pin đôi hot-swap.',
     stock: 4, rating: 4.9, reviews: 156,
     specs: { 'Kết nối': 'Wireless 2.4GHz / Bluetooth 5.0', 'Driver': '40mm Premium', 'Tần số': '10Hz - 40kHz (Hi-Res)', 'ANC': 'Có (4 mic)', 'Microphone': 'ClearCast Gen 2 (thu rút)', 'DAC': 'GameDAC Gen 2', 'Pin': 'Dual Battery Hot-swap (22h/pin)', 'Trọng lượng': '338g' },
-    images: ['assets/img/cpu.svg']
+    images: ['assets/img/headset.svg']
   }
 ];
 
@@ -318,27 +318,84 @@ const CATEGORIES = [
 
 const BRANDS = ['Intel', 'AMD', 'NVIDIA', 'ASUS', 'MSI', 'Gigabyte', 'Corsair', 'G.Skill', 'Kingston', 'Samsung', 'Lexar', 'Logitech', 'Razer', 'HyperX', 'SteelSeries', 'Akko', 'DeepCool', 'Jonsbo', 'Xigmatek', 'LG', 'Kuycon'];
 
+const COUPONS = [
+  {
+    code: 'PCGEAR10',
+    discountPercent: 10,
+    minOrderValue: 5000000,
+    maxDiscount: 2000000,
+    isActive: true
+  }
+];
+
+const STORAGE_KEYS = {
+  products: 'pcgear_products',
+  cart: 'pcgear_cart',
+  wishlist: 'pcgear_wishlist',
+  coupon: 'pcgear_coupon'
+};
+
+// Set baseUrl to your PHP API root when backend endpoints are ready.
+const ApiClient = {
+  baseUrl: '',
+
+  enabled() {
+    return Boolean(this.baseUrl);
+  },
+
+  async request(path, options = {}) {
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      ...options
+    });
+
+    if (!response.ok) {
+      throw new Error(`API ${response.status}: ${response.statusText}`);
+    }
+
+    return response.status === 204 ? null : response.json();
+  }
+};
+
 // --- LocalStorage helpers ---
 
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function readStorage(key, fallback) {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : cloneData(fallback);
+  } catch {
+    localStorage.removeItem(key);
+    return cloneData(fallback);
+  }
+}
+
+function writeStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
 function getProducts() {
-  const saved = localStorage.getItem('pcgear_products');
+  const saved = localStorage.getItem(STORAGE_KEYS.products);
   if (!saved) {
-    localStorage.setItem('pcgear_products', JSON.stringify(DEFAULT_PRODUCTS));
-    return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+    writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS);
+    return cloneData(DEFAULT_PRODUCTS);
   }
   try { 
     const parsed = JSON.parse(saved); 
     if (parsed.length === 0 || !parsed[0].specs || !parsed[0].desc) {
-      localStorage.setItem('pcgear_products', JSON.stringify(DEFAULT_PRODUCTS));
-      return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+      writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS);
+      return cloneData(DEFAULT_PRODUCTS);
     }
     return parsed;
   }
-  catch { localStorage.setItem('pcgear_products', JSON.stringify(DEFAULT_PRODUCTS)); return JSON.parse(JSON.stringify(DEFAULT_PRODUCTS)); }
+  catch { writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS); return cloneData(DEFAULT_PRODUCTS); }
 }
 
 function saveProducts(products) {
-  localStorage.setItem('pcgear_products', JSON.stringify(products));
+  writeStorage(STORAGE_KEYS.products, products);
 }
 
 function money(value) {
@@ -351,11 +408,13 @@ function getDiscount(price, oldPrice) {
 }
 
 function getCart() {
-  return JSON.parse(localStorage.getItem('pcgear_cart') || '[]');
+  return readStorage(STORAGE_KEYS.cart, [])
+    .filter(item => Number(item.id) > 0)
+    .map(item => ({ id: Number(item.id), qty: Math.max(1, Number(item.qty) || 1) }));
 }
 
 function saveCart(cart) {
-  localStorage.setItem('pcgear_cart', JSON.stringify(cart));
+  writeStorage(STORAGE_KEYS.cart, cart);
   updateCartCount();
 }
 
@@ -365,21 +424,35 @@ function updateCartCount() {
 }
 
 function addToCart(id, qty = 1) {
+  const productId = Number(id);
+  const product = getProducts().find(item => item.id === productId);
+  if (!product) {
+    showToast('<i class="fa-solid fa-circle-xmark"></i> Sản phẩm không tồn tại');
+    return;
+  }
+
+  const stock = Number(product.stock) || 0;
+  if (stock <= 0) {
+    showToast('<i class="fa-solid fa-circle-xmark"></i> Sản phẩm đã hết hàng');
+    return;
+  }
+
   const cart = getCart();
-  const found = cart.find(item => item.id === Number(id));
-  if (found) { found.qty += qty; }
-  else { cart.push({ id: Number(id), qty }); }
+  const addQty = Math.max(1, Number(qty) || 1);
+  const found = cart.find(item => item.id === productId);
+  if (found) { found.qty = Math.min(stock, found.qty + addQty); }
+  else { cart.push({ id: productId, qty: Math.min(stock, addQty) }); }
   saveCart(cart);
   showToast('Đã thêm vào giỏ hàng');
 }
 
 // Wishlist
 function getWishlist() {
-  return JSON.parse(localStorage.getItem('pcgear_wishlist') || '[]');
+  return readStorage(STORAGE_KEYS.wishlist, []).map(Number).filter(Boolean);
 }
 
 function saveWishlist(list) {
-  localStorage.setItem('pcgear_wishlist', JSON.stringify(list));
+  writeStorage(STORAGE_KEYS.wishlist, list);
   updateWishlistCount();
 }
 
@@ -409,10 +482,40 @@ function updateWishlistCount() {
   document.querySelectorAll('[data-wishlist-count]').forEach(el => el.textContent = count);
 }
 
+function getCouponByCode(code) {
+  const normalized = String(code || '').trim().toUpperCase();
+  return COUPONS.find(coupon => coupon.code === normalized && coupon.isActive) || null;
+}
+
+function getActiveCoupon() {
+  return getCouponByCode(localStorage.getItem(STORAGE_KEYS.coupon));
+}
+
+function saveActiveCoupon(code) {
+  if (code) localStorage.setItem(STORAGE_KEYS.coupon, String(code).trim().toUpperCase());
+  else localStorage.removeItem(STORAGE_KEYS.coupon);
+}
+
+function calculateCouponDiscount(coupon, subtotal) {
+  if (!coupon || subtotal < coupon.minOrderValue) return 0;
+  const discount = Math.floor(subtotal * coupon.discountPercent / 100);
+  return coupon.maxDiscount ? Math.min(discount, coupon.maxDiscount) : discount;
+}
+
 function showToast(message) {
   let toast = document.querySelector('.toast');
   if (!toast) { toast = document.createElement('div'); toast.className = 'toast'; document.body.appendChild(toast); }
-  toast.textContent = message;
+  toast.replaceChildren();
+
+  const iconMatch = String(message).match(/^<i class="(fa-[^"]+)"><\/i>\s*(.*)$/);
+  if (iconMatch) {
+    const icon = document.createElement('i');
+    icon.className = iconMatch[1];
+    toast.append(icon, document.createTextNode(` ${iconMatch[2]}`));
+  } else {
+    toast.textContent = message;
+  }
+
   toast.classList.add('show');
   clearTimeout(toast._timer);
   toast._timer = setTimeout(() => toast.classList.remove('show'), 2200);

@@ -121,6 +121,19 @@ Table orders {
   updated_at timestamp
 }
 
+Table coupon_usages {
+  id int [pk, increment]
+  coupon_id int [not null, ref: > coupons.id]
+  user_id int [not null, ref: > users.id]
+  order_id int [not null, ref: > orders.id]
+  used_at timestamp [default: `now()`]
+
+  indexes {
+    (coupon_id, order_id) [unique]
+    (user_id, used_at)
+  }
+}
+
 Table order_items {
   id int [pk, increment]
   order_id int [not null, ref: > orders.id]

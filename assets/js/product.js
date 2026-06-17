@@ -94,7 +94,7 @@ function renderDetail(p) {
       </div>
 
       <div class="detail-actions">
-        <button class="btn btn-primary" onclick="addToCart(${p.id})">Thêm vào giỏ</button>
+        <button class="btn btn-primary" onclick="addDetailToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''}>Thêm vào giỏ</button>
         <button class="btn btn-outline ${wl ? 'active' : ''}" id="detail-wishlist" data-wishlist="${p.id}" onclick="toggleWishlist(${p.id})" style="height:52px;padding:0 20px;font-size:16px;font-weight:600">${wl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>'}</button>
       </div>
 
@@ -162,6 +162,14 @@ function changeQty(delta) {
 
 function handleBuyNow(id) {
   const qty = Number(document.getElementById('detail-qty')?.value || 1);
+  addToCart(id, qty);
+}
+
+function addDetailToCart(id) {
+  const input = document.getElementById('detail-qty');
+  const max = Number(input?.max || 1);
+  const qty = Math.max(1, Math.min(max, Number(input?.value) || 1));
+  if (input) input.value = qty;
   addToCart(id, qty);
 }
 

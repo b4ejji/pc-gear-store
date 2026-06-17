@@ -8,9 +8,36 @@ Thiết kế cơ sở dữ liệu cho backend PHP + MySQL.
 
 Source DBML: [pcgear_store.dbml](pcgear_store.dbml) (import vào dbdiagram.io để xem/chỉnh sửa)
 
+> Lưu ý: `erd.png` là ảnh export tĩnh. Sơ đồ Mermaid dưới đây phản ánh schema mới nhất trong tài liệu.
+
+```mermaid
+erDiagram
+  users ||--o{ cart_items : owns
+  users ||--o{ wishlists : owns
+  users ||--o{ orders : places
+  users ||--o{ reviews : writes
+  users ||--o{ blog_posts : authors
+  users ||--o{ coupon_usages : uses
+
+  categories ||--o{ products : groups
+  brands ||--o{ products : makes
+  products ||--o{ product_images : has
+  products ||--o{ product_specs : has
+  products ||--o{ cart_items : appears_in
+  products ||--o{ wishlists : saved_in
+  products ||--o{ order_items : sold_as
+  products ||--o{ reviews : receives
+
+  coupons ||--o{ orders : applied_to
+  coupons ||--o{ coupon_usages : tracked_by
+  orders ||--o{ order_items : contains
+  orders ||--o| coupon_usages : records
+  orders ||--o{ reviews : verifies
+```
+
 ## Danh sách bảng
 
-Tổng cộng 13 bảng:
+Tổng cộng 14 bảng:
 
 | STT | Bảng | Mô tả |
 |-----|------|-------|
@@ -24,9 +51,10 @@ Tổng cộng 13 bảng:
 | 8 | wishlists | Danh sách yêu thích |
 | 9 | coupons | Mã giảm giá |
 | 10 | orders | Đơn hàng |
-| 11 | order_items | Chi tiết đơn hàng |
-| 12 | reviews | Đánh giá sản phẩm |
-| 13 | blog_posts | Bài viết blog |
+| 11 | coupon_usages | Lịch sử sử dụng mã giảm giá theo user/order |
+| 12 | order_items | Chi tiết đơn hàng |
+| 13 | reviews | Đánh giá sản phẩm |
+| 14 | blog_posts | Bài viết blog |
 
 ## Mô tả chi tiết
 
@@ -57,6 +85,9 @@ Danh sách yêu thích. Tương tự cart_items, có UNIQUE(user_id, product_id)
 ### coupons
 Mã giảm giá. Có giới hạn số lần dùng, ngày hết hạn, giá trị đơn tối thiểu.
 
+### coupon_usages
+Ghi nhận mã giảm giá đã được dùng ở đơn hàng nào, bởi user nào. Bảng này giúp kiểm soát giới hạn dùng mã và audit lịch sử khuyến mãi khi nối backend thật.
+
 ### orders
 Đơn hàng. Trạng thái: pending → confirmed → shipping → delivered / cancelled.
 Phương thức thanh toán: COD, chuyển khoản, MoMo.
@@ -86,6 +117,9 @@ Bài viết blog. Tác giả liên kết tới users (admin).
 | users | reviews | 1:N | |
 | products | reviews | 1:N | |
 | coupons | orders | 1:N | Nullable |
+| coupons | coupon_usages | 1:N | Theo dõi lượt dùng mã |
+| users | coupon_usages | 1:N | |
+| orders | coupon_usages | 1:1 | UNIQUE(coupon_id, order_id) |
 | users | blog_posts | 1:N | Admin viết bài |
 
 ## File liên quan

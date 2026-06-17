@@ -159,7 +159,7 @@ function resetForm() {
 
 function resetProducts() {
   if (!confirm('Reset lại toàn bộ dữ liệu sản phẩm về mặc định?')) return;
-  localStorage.removeItem('pcgear_products');
+  localStorage.removeItem(STORAGE_KEYS.products);
   renderAdminTable();
   renderStats();
   showToast('<i class="fa-solid fa-rotate-right"></i> Đã reset dữ liệu mẫu');

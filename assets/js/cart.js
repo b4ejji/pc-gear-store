@@ -3,12 +3,21 @@
 document.addEventListener('DOMContentLoaded', renderCartPage);
 
 function renderCartPage() {
-  const cart = getCart();
   const products = getProducts();
+  let cart = getCart();
   const listEl = document.querySelector('[data-cart-list]');
   const summaryEl = document.querySelector('[data-cart-summary]');
 
   if (!listEl || !summaryEl) return;
+
+  cart = cart
+    .map(item => {
+      const product = products.find(p => p.id === item.id);
+      if (!product || Number(product.stock) <= 0) return null;
+      return { ...item, qty: Math.min(item.qty, Number(product.stock) || 1) };
+    })
+    .filter(Boolean);
+  saveCart(cart);
 
   if (!cart.length) {
     listEl.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
@@ -23,11 +32,13 @@ function renderCartPage() {
 
   // Cart items table
   let subtotal = 0;
+  let itemCount = 0;
   const rows = cart.map(item => {
     const p = products.find(pr => pr.id === item.id);
     if (!p) return '';
     const itemTotal = p.price * item.qty;
     subtotal += itemTotal;
+    itemCount += item.qty;
 
     return `<tr>
       <td>
@@ -63,17 +74,20 @@ function renderCartPage() {
 
   // Summary
   const shipping = subtotal >= 10000000 ? 0 : 50000;
-  const total = subtotal + shipping;
+  const coupon = getActiveCoupon();
+  const discount = calculateCouponDiscount(coupon, subtotal);
+  const total = Math.max(0, subtotal + shipping - discount);
 
   summaryEl.innerHTML = `
     <div class="cart-summary">
       <h3>Tóm tắt đơn hàng</h3>
-      <div class="summary-row"><span>Tạm tính (${cart.reduce((s, i) => s + i.qty, 0)} sản phẩm)</span><strong>${money(subtotal)}</strong></div>
+      <div class="summary-row"><span>Tạm tính (${itemCount} sản phẩm)</span><strong>${money(subtotal)}</strong></div>
       <div class="summary-row"><span>Phí vận chuyển</span><strong>${shipping === 0 ? '<span class="text-success">Miễn phí</span>' : money(shipping)}</strong></div>
+      ${coupon ? `<div class="summary-row"><span>Mã ${coupon.code}</span><strong class="text-success">-${money(discount)}</strong></div>` : ''}
       ${shipping > 0 ? `<p style="font-size:12px;color:var(--text-muted);margin-top:4px"><i class="fa-solid fa-bolt"></i> Mua thêm <strong>${money(10000000 - subtotal)}</strong> để được miễn ship!</p>` : ''}
       
       <div class="coupon-box">
-        <input type="text" placeholder="Mã giảm giá" id="coupon-input">
+        <input type="text" placeholder="Mã giảm giá" id="coupon-input" value="${coupon?.code || ''}">
         <button class="btn btn-primary btn-sm" onclick="applyCoupon()">Áp dụng</button>
       </div>
 
@@ -90,7 +104,9 @@ function updateCartQty(id, delta) {
   const cart = getCart();
   const item = cart.find(i => i.id === id);
   if (item) {
-    item.qty = Math.max(1, item.qty + delta);
+    const product = getProducts().find(p => p.id === id);
+    const max = Number(product?.stock) || 1;
+    item.qty = Math.max(1, Math.min(max, item.qty + delta));
     saveCart(cart);
     renderCartPage();
   }
@@ -100,7 +116,9 @@ function setCartQty(id, val) {
   const cart = getCart();
   const item = cart.find(i => i.id === id);
   if (item) {
-    item.qty = Math.max(1, Number(val));
+    const product = getProducts().find(p => p.id === id);
+    const max = Number(product?.stock) || 1;
+    item.qty = Math.max(1, Math.min(max, Number(val) || 1));
     saveCart(cart);
     renderCartPage();
   }
@@ -116,9 +134,24 @@ function removeFromCart(id) {
 function applyCoupon() {
   const input = document.getElementById('coupon-input');
   const code = input?.value.trim().toUpperCase();
-  if (code === 'PCGEAR10') {
-    showToast('<i class="fa-solid fa-gift"></i> Mã giảm giá hợp lệ! Giảm 10%.');
+  const products = getProducts();
+  const subtotal = getCart().reduce((sum, item) => {
+    const product = products.find(p => p.id === item.id);
+    return sum + (product ? product.price * item.qty : 0);
+  }, 0);
+  const coupon = getCouponByCode(code);
+
+  if (coupon && subtotal >= coupon.minOrderValue) {
+    saveActiveCoupon(coupon.code);
+    renderCartPage();
+    showToast(`<i class="fa-solid fa-gift"></i> Đã áp dụng mã ${coupon.code}`);
+  } else if (coupon) {
+    saveActiveCoupon('');
+    renderCartPage();
+    showToast(`<i class="fa-solid fa-circle-xmark"></i> Đơn tối thiểu ${money(coupon.minOrderValue)}`);
   } else if (code) {
+    saveActiveCoupon('');
+    renderCartPage();
     showToast('<i class="fa-solid fa-circle-xmark"></i> Mã giảm giá không hợp lệ.');
   }
 }
@@ -126,5 +159,6 @@ function applyCoupon() {
 function handleCheckout() {
   showToast('<i class="fa-solid fa-circle-check"></i> Đặt hàng thành công! (Demo frontend)');
   saveCart([]);
+  saveActiveCoupon('');
   setTimeout(() => renderCartPage(), 1500);
 }
