@@ -332,25 +332,43 @@ const STORAGE_KEYS = {
   products: 'pcgear_products',
   cart: 'pcgear_cart',
   wishlist: 'pcgear_wishlist',
+<<<<<<< HEAD
   wishlistGuest: 'pcgear_wishlist_guest',
   coupon: 'pcgear_coupon',
   session: 'pcgear_session',
+=======
+  coupon: 'pcgear_coupon',
+  token: 'pcgear_token',
+>>>>>>> origin/main
   user: 'pcgear_user'
 };
 
 const ApiClient = {
+<<<<<<< HEAD
   baseUrl: 'backend',
+=======
+  baseUrl: 'backend/public',
+>>>>>>> origin/main
 
   enabled() {
     return Boolean(this.baseUrl) && /^https?:$/.test(window.location.protocol);
   },
 
   async request(path, options = {}) {
+<<<<<<< HEAD
     const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
 
     const response = await fetch(`${this.baseUrl}${path}`, {
       headers,
       credentials: 'same-origin',
+=======
+    const token = getAuthToken();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      headers,
+>>>>>>> origin/main
       ...options
     });
 
@@ -369,8 +387,32 @@ const ApiClient = {
   async bootstrap() {
     if (!this.enabled()) return;
     try {
+<<<<<<< HEAD
       const products = await this.request('/products/list.php?per_page=50');
       ApiState.products = products.data || [];
+=======
+      const [products, categories, brands, posts] = await Promise.all([
+        this.request('/products?per_page=50'),
+        this.request('/categories'),
+        this.request('/brands'),
+        this.request('/blog-posts')
+      ]);
+
+      ApiState.products = products.data || [];
+      if (Array.isArray(categories.data)) {
+        CATEGORIES.splice(0, CATEGORIES.length, ...categories.data.map(c => ({
+          key: c.key,
+          label: c.label,
+          icon: c.icon
+        })));
+      }
+      if (Array.isArray(brands.data)) {
+        BRANDS.splice(0, BRANDS.length, ...brands.data.map(b => b.name));
+      }
+      if (Array.isArray(posts.data)) {
+        BLOG_POSTS.splice(0, BLOG_POSTS.length, ...posts.data.map(mapBlogPostFromApi));
+      }
+>>>>>>> origin/main
     } catch (error) {
       console.warn('Backend API unavailable, using local fallback.', error);
     }
@@ -390,7 +432,11 @@ function mapBlogPostFromApi(post) {
     category: post.category,
     author: 'PC Gear',
     date: String(post.published_at || post.created_at || '').slice(0, 10),
+<<<<<<< HEAD
     readTime: post.read_time ? `${post.read_time} phút` : '5 phút',
+=======
+    readTime: post.read_time ? `${post.read_time} phÃºt` : '5 phÃºt',
+>>>>>>> origin/main
     image: post.image || 'assets/img/gpu.svg'
   };
 }
@@ -456,20 +502,31 @@ function saveProducts(products) {
   writeStorage(STORAGE_KEYS.products, products);
 }
 
+<<<<<<< HEAD
 function getAuthSession() {
   return localStorage.getItem(STORAGE_KEYS.session);
+=======
+function getAuthToken() {
+  return localStorage.getItem(STORAGE_KEYS.token);
+>>>>>>> origin/main
 }
 
 function getCurrentUser() {
   return readStorage(STORAGE_KEYS.user, null);
 }
 
+<<<<<<< HEAD
 function saveAuthSession({ user }) {
   if (user) localStorage.setItem(STORAGE_KEYS.session, '1');
+=======
+function saveAuthSession({ token, user }) {
+  if (token) localStorage.setItem(STORAGE_KEYS.token, token);
+>>>>>>> origin/main
   if (user) writeStorage(STORAGE_KEYS.user, user);
 }
 
 function clearAuthSession() {
+<<<<<<< HEAD
   if (ApiClient.enabled()) {
     ApiClient.request('/auth/logout.php', { method: 'POST' }).catch(error => {
       console.warn('Logout failed.', error);
@@ -491,6 +548,14 @@ function logoutUser(redirect = 'index.html') {
 
 async function loginUser(email, password) {
   const session = await ApiClient.request('/auth/login.php', {
+=======
+  localStorage.removeItem(STORAGE_KEYS.token);
+  localStorage.removeItem(STORAGE_KEYS.user);
+}
+
+async function loginUser(email, password) {
+  const session = await ApiClient.request('/auth/login', {
+>>>>>>> origin/main
     method: 'POST',
     body: JSON.stringify({ email, password })
   });
@@ -499,7 +564,11 @@ async function loginUser(email, password) {
 }
 
 async function registerUser(payload) {
+<<<<<<< HEAD
   const session = await ApiClient.request('/auth/login.php?action=register', {
+=======
+  const session = await ApiClient.request('/auth/register', {
+>>>>>>> origin/main
     method: 'POST',
     body: JSON.stringify(payload)
   });
@@ -510,8 +579,13 @@ async function registerUser(payload) {
 async function saveProductToApi(product, id = null) {
   if (!ApiClient.enabled()) return product;
 
+<<<<<<< HEAD
   const response = await ApiClient.request(id ? `/products/edit.php?id=${id}` : '/products/add.php', {
     method: 'POST',
+=======
+  const response = await ApiClient.request(id ? `/products/${id}` : '/products', {
+    method: id ? 'PUT' : 'POST',
+>>>>>>> origin/main
     body: JSON.stringify(product)
   });
   ApiState.products = null;
@@ -522,7 +596,11 @@ async function saveProductToApi(product, id = null) {
 async function deleteProductFromApi(id) {
   if (!ApiClient.enabled()) return;
 
+<<<<<<< HEAD
   await ApiClient.request(`/products/delete.php?id=${id}`, { method: 'POST' });
+=======
+  await ApiClient.request(`/products/${id}`, { method: 'DELETE' });
+>>>>>>> origin/main
   ApiState.products = null;
   await ApiClient.bootstrap();
 }
@@ -591,10 +669,17 @@ async function addToCart(id, qty = 1) {
 }
 
 async function syncCartItemToApi(productId, quantity) {
+<<<<<<< HEAD
   if (!ApiClient.enabled() || !getAuthSession()) return;
 
   try {
     await ApiClient.request('/cart/add.php', {
+=======
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request('/cart/items', {
+>>>>>>> origin/main
       method: 'POST',
       body: JSON.stringify({ product_id: Number(productId), quantity: Number(quantity) })
     });
@@ -604,20 +689,34 @@ async function syncCartItemToApi(productId, quantity) {
 }
 
 async function removeCartItemFromApi(productId) {
+<<<<<<< HEAD
   if (!ApiClient.enabled() || !getAuthSession()) return;
 
   try {
     await ApiClient.request(`/cart/remove.php?id=${productId}`, { method: 'POST' });
+=======
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request(`/cart/items/${productId}`, { method: 'DELETE' });
+>>>>>>> origin/main
   } catch (error) {
     console.warn('Cart remove sync failed.', error);
   }
 }
 
 async function clearCartFromApi() {
+<<<<<<< HEAD
   if (!ApiClient.enabled() || !getAuthSession()) return;
 
   try {
     await ApiClient.request('/cart/remove.php?all=1', { method: 'POST' });
+=======
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request('/cart', { method: 'DELETE' });
+>>>>>>> origin/main
   } catch (error) {
     console.warn('Cart clear sync failed.', error);
   }
@@ -637,10 +736,13 @@ function saveWishlist(list) {
   updateWishlistCount();
 }
 
+<<<<<<< HEAD
 async function loadWishlistFromApi() {
   return getWishlist();
 }
 
+=======
+>>>>>>> origin/main
 async function toggleWishlist(id) {
   let list = getWishlist();
   const numId = Number(id);
@@ -661,7 +763,17 @@ async function toggleWishlist(id) {
 }
 
 async function syncWishlistToApi(productId, active) {
+<<<<<<< HEAD
   return;
+=======
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request(`/wishlist/${productId}`, { method: active ? 'POST' : 'DELETE' });
+  } catch (error) {
+    console.warn('Wishlist sync failed.', error);
+  }
+>>>>>>> origin/main
 }
 
 function isInWishlist(id) {
@@ -697,6 +809,23 @@ async function fetchCouponByCode(code, subtotal = 0) {
   const normalized = String(code || '').trim().toUpperCase();
   if (!normalized) return null;
 
+<<<<<<< HEAD
+=======
+  if (ApiClient.enabled()) {
+    try {
+      const response = await ApiClient.request(`/coupons/${encodeURIComponent(normalized)}?subtotal=${Number(subtotal) || 0}`);
+      return response.data ? {
+        code: response.data.code,
+        discountPercent: Number(response.data.discountPercent),
+        minOrderValue: Number(response.data.minOrderValue),
+        maxDiscount: response.data.maxDiscount !== null ? Number(response.data.maxDiscount) : null,
+        isActive: Boolean(response.data.isActive)
+      } : null;
+    } catch {
+      return null;
+    }
+  }
+>>>>>>> origin/main
 
   return getCouponByCode(normalized);
 }
@@ -705,11 +834,19 @@ async function createOrderFromCart(payload) {
   if (!ApiClient.enabled()) {
     throw new Error('Backend API chưa sẵn sàng.');
   }
+<<<<<<< HEAD
   if (!getAuthSession()) {
     throw new Error('Vui lòng đăng nhập để đặt hàng.');
   }
 
   const response = await ApiClient.request('/orders/checkout.php', {
+=======
+  if (!getAuthToken()) {
+    throw new Error('Vui lòng đăng nhập để đặt hàng.');
+  }
+
+  const response = await ApiClient.request('/orders', {
+>>>>>>> origin/main
     method: 'POST',
     body: JSON.stringify(payload)
   });

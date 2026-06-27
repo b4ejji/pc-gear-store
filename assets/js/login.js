@@ -1,12 +1,16 @@
 ﻿// LOGIN.JS - Auth page logic
 
 onAppReady(() => {
+<<<<<<< HEAD
   renderAuthenticatedState();
+=======
+>>>>>>> origin/main
   initAuthTabs();
   initLoginForm();
   initRegisterForm();
 });
 
+<<<<<<< HEAD
 function renderAuthenticatedState() {
   const user = getCurrentUser();
   const card = document.querySelector('.auth-card');
@@ -28,6 +32,8 @@ function renderAuthenticatedState() {
   `;
 }
 
+=======
+>>>>>>> origin/main
 function initAuthTabs() {
   document.querySelectorAll('[data-tab]').forEach(button => {
     button.addEventListener('click', () => {

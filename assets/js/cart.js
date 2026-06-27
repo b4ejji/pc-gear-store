@@ -118,7 +118,11 @@ function renderCartSummary(summaryEl, subtotal, itemCount) {
         <option value="banking">Chuyển khoản ngân hàng</option>
         <option value="momo">Ví MoMo</option>
       </select>
+<<<<<<< HEAD
       <small data-address-status style="color:var(--text-muted)">Chọn tỉnh/thành phố rồi chọn phường/xã giao hàng.</small>
+=======
+      <small data-address-status style="color:var(--text-muted)">Provinces Open API v2 dùng mô hình Tỉnh/Thành -> Phường/Xã sau sáp nhập, không còn cấp Quận/Huyện.</small>
+>>>>>>> origin/main
     </form>
 
     <div class="summary-total">
@@ -218,7 +222,11 @@ async function renderWardOptions(provinceCode) {
     wardSelect.addEventListener('change', () => {
       CheckoutAddressState.wardCode = wardSelect.value;
     });
+<<<<<<< HEAD
     if (status) status.textContent = 'Chọn tỉnh/thành phố rồi chọn phường/xã giao hàng.';
+=======
+    if (status) status.textContent = 'Provinces Open API v2 dùng mô hình Tỉnh/Thành -> Phường/Xã sau sáp nhập.';
+>>>>>>> origin/main
   } catch (error) {
     wardSelect.innerHTML = '<option value="">Không tải được phường/xã</option>';
     wardSelect.required = false;
@@ -282,7 +290,11 @@ async function applyCoupon() {
 }
 
 async function handleCheckout() {
+<<<<<<< HEAD
   if (!getAuthSession()) {
+=======
+  if (!getAuthToken()) {
+>>>>>>> origin/main
     showToast('<i class="fa-solid fa-circle-xmark"></i> Vui lòng đăng nhập để đặt hàng');
     setTimeout(() => window.location.href = 'login.html', 900);
     return;
@@ -319,6 +331,14 @@ async function handleCheckout() {
   } catch (error) {
     showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Không thể đặt hàng'}`);
   }
+<<<<<<< HEAD
+=======
+}
+
+function getSelectedText(select) {
+  if (!select || !select.value) return '';
+  return select.options[select.selectedIndex]?.textContent.trim() || '';
+>>>>>>> origin/main
 }
 
 function getSelectedText(select) {

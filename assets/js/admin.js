@@ -1,13 +1,18 @@
 // ADMIN.JS - Admin dashboard logic
 
 onAppReady(() => {
+<<<<<<< HEAD
   if (!ensureAdminAccess()) return;
+=======
+  warnIfMissingAdminSession();
+>>>>>>> origin/main
   renderStats();
   renderAdminTable();
   initAdminForm();
   initAdminSearch();
 });
 
+<<<<<<< HEAD
 function ensureAdminAccess() {
   if (!ApiClient.enabled()) return true;
 
@@ -17,6 +22,15 @@ function ensureAdminAccess() {
   showToast('Vui lòng đăng nhập bằng tài khoản quản trị');
   setTimeout(() => { window.location.href = 'login.html'; }, 700);
   return false;
+=======
+function warnIfMissingAdminSession() {
+  if (!ApiClient.enabled()) return;
+
+  const user = getCurrentUser();
+  if (!user || user.role !== 'admin') {
+    showToast('Đăng nhập admin để thêm, sửa, xóa sản phẩm');
+  }
+>>>>>>> origin/main
 }
 
 function renderStats() {

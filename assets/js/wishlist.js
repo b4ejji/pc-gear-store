@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 onAppReady(async () => {
   await loadWishlistFromApi();
   renderWishlistPage();
 });
+=======
+onAppReady(renderWishlistPage);
+>>>>>>> origin/main
 
 function renderWishlistPage() {
   const container = document.querySelector('[data-wishlist-grid]');
