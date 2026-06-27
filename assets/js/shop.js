@@ -5,7 +5,7 @@
   let currentPage = 1;
   let filteredProducts = [];
 
-  document.addEventListener('DOMContentLoaded', init);
+  onAppReady(init);
 
   function init() {
     initFilters();

@@ -332,30 +332,102 @@ const STORAGE_KEYS = {
   products: 'pcgear_products',
   cart: 'pcgear_cart',
   wishlist: 'pcgear_wishlist',
-  coupon: 'pcgear_coupon'
+  coupon: 'pcgear_coupon',
+  token: 'pcgear_token',
+  user: 'pcgear_user'
 };
 
-// Set baseUrl to your PHP API root when backend endpoints are ready.
 const ApiClient = {
-  baseUrl: '',
+  baseUrl: 'backend/public',
 
   enabled() {
-    return Boolean(this.baseUrl);
+    return Boolean(this.baseUrl) && /^https?:$/.test(window.location.protocol);
   },
 
   async request(path, options = {}) {
+    const token = getAuthToken();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
     const response = await fetch(`${this.baseUrl}${path}`, {
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers,
       ...options
     });
 
     if (!response.ok) {
-      throw new Error(`API ${response.status}: ${response.statusText}`);
+      let message = `API ${response.status}: ${response.statusText}`;
+      try {
+        const error = await response.json();
+        if (error?.message) message = error.message;
+      } catch { }
+      throw new Error(message);
     }
 
     return response.status === 204 ? null : response.json();
+  },
+
+  async bootstrap() {
+    if (!this.enabled()) return;
+    try {
+      const [products, categories, brands, posts] = await Promise.all([
+        this.request('/products?per_page=50'),
+        this.request('/categories'),
+        this.request('/brands'),
+        this.request('/blog-posts')
+      ]);
+
+      ApiState.products = products.data || [];
+      if (Array.isArray(categories.data)) {
+        CATEGORIES.splice(0, CATEGORIES.length, ...categories.data.map(c => ({
+          key: c.key,
+          label: c.label,
+          icon: c.icon
+        })));
+      }
+      if (Array.isArray(brands.data)) {
+        BRANDS.splice(0, BRANDS.length, ...brands.data.map(b => b.name));
+      }
+      if (Array.isArray(posts.data)) {
+        BLOG_POSTS.splice(0, BLOG_POSTS.length, ...posts.data.map(mapBlogPostFromApi));
+      }
+    } catch (error) {
+      console.warn('Backend API unavailable, using local fallback.', error);
+    }
   }
 };
+
+const ApiState = {
+  products: null,
+  ready: null
+};
+
+function mapBlogPostFromApi(post) {
+  return {
+    id: Number(post.id),
+    title: post.title,
+    excerpt: post.excerpt || '',
+    category: post.category,
+    author: 'PC Gear',
+    date: String(post.published_at || post.created_at || '').slice(0, 10),
+    readTime: post.read_time ? `${post.read_time} phÃºt` : '5 phÃºt',
+    image: post.image || 'assets/img/gpu.svg'
+  };
+}
+
+function whenDomReady() {
+  if (document.readyState !== 'loading') return Promise.resolve();
+  return new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+}
+
+function onAppReady(callback) {
+  if (!ApiState.ready) {
+    ApiState.ready = Promise.all([whenDomReady(), ApiClient.bootstrap()]);
+  }
+  ApiState.ready.then(callback).catch(error => {
+    console.error(error);
+    callback();
+  });
+}
 
 // --- LocalStorage helpers ---
 
@@ -378,6 +450,10 @@ function writeStorage(key, value) {
 }
 
 function getProducts() {
+  if (Array.isArray(ApiState.products)) {
+    return cloneData(ApiState.products);
+  }
+
   const saved = localStorage.getItem(STORAGE_KEYS.products);
   if (!saved) {
     writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS);
@@ -395,7 +471,64 @@ function getProducts() {
 }
 
 function saveProducts(products) {
+  ApiState.products = cloneData(products);
   writeStorage(STORAGE_KEYS.products, products);
+}
+
+function getAuthToken() {
+  return localStorage.getItem(STORAGE_KEYS.token);
+}
+
+function getCurrentUser() {
+  return readStorage(STORAGE_KEYS.user, null);
+}
+
+function saveAuthSession({ token, user }) {
+  if (token) localStorage.setItem(STORAGE_KEYS.token, token);
+  if (user) writeStorage(STORAGE_KEYS.user, user);
+}
+
+function clearAuthSession() {
+  localStorage.removeItem(STORAGE_KEYS.token);
+  localStorage.removeItem(STORAGE_KEYS.user);
+}
+
+async function loginUser(email, password) {
+  const session = await ApiClient.request('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+  saveAuthSession(session);
+  return session.user;
+}
+
+async function registerUser(payload) {
+  const session = await ApiClient.request('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+  saveAuthSession(session);
+  return session.user;
+}
+
+async function saveProductToApi(product, id = null) {
+  if (!ApiClient.enabled()) return product;
+
+  const response = await ApiClient.request(id ? `/products/${id}` : '/products', {
+    method: id ? 'PUT' : 'POST',
+    body: JSON.stringify(product)
+  });
+  ApiState.products = null;
+  await ApiClient.bootstrap();
+  return response.data;
+}
+
+async function deleteProductFromApi(id) {
+  if (!ApiClient.enabled()) return;
+
+  await ApiClient.request(`/products/${id}`, { method: 'DELETE' });
+  ApiState.products = null;
+  await ApiClient.bootstrap();
 }
 
 function money(value) {
@@ -423,7 +556,7 @@ function updateCartCount() {
   document.querySelectorAll('[data-cart-count]').forEach(el => el.textContent = count);
 }
 
-function addToCart(id, qty = 1) {
+async function addToCart(id, qty = 1) {
   const productId = Number(id);
   const product = getProducts().find(item => item.id === productId);
   if (!product) {
@@ -443,7 +576,41 @@ function addToCart(id, qty = 1) {
   if (found) { found.qty = Math.min(stock, found.qty + addQty); }
   else { cart.push({ id: productId, qty: Math.min(stock, addQty) }); }
   saveCart(cart);
+  syncCartItemToApi(productId, cart.find(item => item.id === productId)?.qty || addQty);
   showToast('Đã thêm vào giỏ hàng');
+}
+
+async function syncCartItemToApi(productId, quantity) {
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request('/cart/items', {
+      method: 'POST',
+      body: JSON.stringify({ product_id: Number(productId), quantity: Number(quantity) })
+    });
+  } catch (error) {
+    console.warn('Cart sync failed.', error);
+  }
+}
+
+async function removeCartItemFromApi(productId) {
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request(`/cart/items/${productId}`, { method: 'DELETE' });
+  } catch (error) {
+    console.warn('Cart remove sync failed.', error);
+  }
+}
+
+async function clearCartFromApi() {
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request('/cart', { method: 'DELETE' });
+  } catch (error) {
+    console.warn('Cart clear sync failed.', error);
+  }
 }
 
 // Wishlist
@@ -456,10 +623,11 @@ function saveWishlist(list) {
   updateWishlistCount();
 }
 
-function toggleWishlist(id) {
+async function toggleWishlist(id) {
   let list = getWishlist();
   const numId = Number(id);
-  if (list.includes(numId)) {
+  const shouldRemove = list.includes(numId);
+  if (shouldRemove) {
     list = list.filter(i => i !== numId);
     showToast('<i class="fa-solid fa-circle-xmark"></i> Đã bỏ khỏi yêu thích');
   } else {
@@ -467,10 +635,21 @@ function toggleWishlist(id) {
     showToast('<i class="fa-solid fa-heart"></i> Đã thêm vào yêu thích');
   }
   saveWishlist(list);
+  syncWishlistToApi(numId, !shouldRemove);
   document.querySelectorAll(`[data-wishlist="${id}"]`).forEach(btn => {
     btn.classList.toggle('active', list.includes(numId));
     btn.innerHTML = list.includes(numId) ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
   });
+}
+
+async function syncWishlistToApi(productId, active) {
+  if (!ApiClient.enabled() || !getAuthToken()) return;
+
+  try {
+    await ApiClient.request(`/wishlist/${productId}`, { method: active ? 'POST' : 'DELETE' });
+  } catch (error) {
+    console.warn('Wishlist sync failed.', error);
+  }
 }
 
 function isInWishlist(id) {
@@ -500,6 +679,44 @@ function calculateCouponDiscount(coupon, subtotal) {
   if (!coupon || subtotal < coupon.minOrderValue) return 0;
   const discount = Math.floor(subtotal * coupon.discountPercent / 100);
   return coupon.maxDiscount ? Math.min(discount, coupon.maxDiscount) : discount;
+}
+
+async function fetchCouponByCode(code, subtotal = 0) {
+  const normalized = String(code || '').trim().toUpperCase();
+  if (!normalized) return null;
+
+  if (ApiClient.enabled()) {
+    try {
+      const response = await ApiClient.request(`/coupons/${encodeURIComponent(normalized)}?subtotal=${Number(subtotal) || 0}`);
+      return response.data ? {
+        code: response.data.code,
+        discountPercent: Number(response.data.discountPercent),
+        minOrderValue: Number(response.data.minOrderValue),
+        maxDiscount: response.data.maxDiscount !== null ? Number(response.data.maxDiscount) : null,
+        isActive: Boolean(response.data.isActive)
+      } : null;
+    } catch {
+      return null;
+    }
+  }
+
+  return getCouponByCode(normalized);
+}
+
+async function createOrderFromCart(payload) {
+  if (!ApiClient.enabled()) {
+    throw new Error('Backend API chưa sẵn sàng.');
+  }
+  if (!getAuthToken()) {
+    throw new Error('Vui lòng đăng nhập để đặt hàng.');
+  }
+
+  const response = await ApiClient.request('/orders', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+
+  return response.data;
 }
 
 function showToast(message) {

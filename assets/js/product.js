@@ -1,6 +1,6 @@
 // PRODUCT.JS - Product detail page logic
 
-document.addEventListener('DOMContentLoaded', () => {
+onAppReady(() => {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get('id'));
   const products = getProducts();
