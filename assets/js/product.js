@@ -46,7 +46,7 @@ function renderDetail(p) {
     <!-- Gallery -->
     <div class="detail-gallery">
       <div class="detail-main-image">
-        ${p.badge ? `<span class="product-badge ${p.badge}">${getBadgeText(p)}</span>` : ''}
+        ${p.badge ? `<span class="product-badge ${p.badge}">${p.badgeText || p.badge}</span>` : ''}
         <img src="${p.image}" alt="${p.name}" id="detail-main-img">
       </div>
       <div class="detail-thumbnails">

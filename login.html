@@ -21,7 +21,7 @@
       <div class="topbar-right">
         <a href="blog.html"><i class="fa-solid fa-book-open"></i> Blog & Hướng dẫn</a>
         <span class="topbar-divider"></span>
-        <a class="admin-only-link" href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+        <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
       </div>
     </div>
   </div>
@@ -129,6 +129,7 @@
           <a href="#" style="color:var(--primary);font-weight:600">Quên mật khẩu?</a>
         </div>
         <button class="btn btn-primary btn-lg btn-full">Đăng nhập</button>
+        <p class="auth-note">Demo frontend: chưa kết nối backend PHP session.</p>
       </form>
 
       <form class="auth-form" data-auth-form="register">
@@ -149,9 +150,14 @@
           <input class="form-input" type="password" placeholder="Tối thiểu 6 ký tự" required>
         </div>
         <button class="btn btn-primary btn-lg btn-full">Tạo tài khoản</button>
+        <p class="auth-note">Sau này form sẽ insert vào bảng users MySQL.</p>
       </form>
 
-
+      <div class="auth-divider">hoặc</div>
+      <div class="social-login">
+        <button type="button" onclick="showToast('Demo: Đăng nhập Google')">Google</button>
+        <button type="button" onclick="showToast('Demo: Đăng nhập Facebook')">Facebook</button>
+      </div>
     </div>
   </main>
 
@@ -213,7 +219,7 @@
         <div class="footer-bottom-links">
           <a href="products.html">Sản phẩm</a>
           <a href="blog.html">Blog</a>
-          <a class="admin-only-link" href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
+          <a href="admin.html"><i class="fa-solid fa-gear"></i> Admin</a>
           <a href="login.html">Tài khoản</a>
         </div>
       </div>

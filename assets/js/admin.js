@@ -1,22 +1,20 @@
 // ADMIN.JS - Admin dashboard logic
 
 onAppReady(() => {
-  if (!ensureAdminAccess()) return;
+  warnIfMissingAdminSession();
   renderStats();
   renderAdminTable();
   initAdminForm();
   initAdminSearch();
 });
 
-function ensureAdminAccess() {
-  if (!ApiClient.enabled()) return true;
+function warnIfMissingAdminSession() {
+  if (!ApiClient.enabled()) return;
 
   const user = getCurrentUser();
-  if (user?.role === 'admin') return true;
-
-  showToast('Vui l�ng dang nh?p b?ng t�i kho?n qu?n tr?');
-  setTimeout(() => { window.location.href = 'login.html'; }, 700);
-  return false;
+  if (!user || user.role !== 'admin') {
+    showToast('Đăng nhập admin để thêm, sửa, xóa sản phẩm');
+  }
 }
 
 function renderStats() {
@@ -43,7 +41,7 @@ function renderAdminTable(filter = '') {
   });
 
   if (!products.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted)">Kh�ng t�m th?y s?n ph?m n�o.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted)">Không tìm thấy sản phẩm nào.</td></tr>`;
     return;
   }
 
@@ -59,8 +57,8 @@ function renderAdminTable(filter = '') {
       <td>${product.stock || 0}</td>
       <td>
         <div class="table-actions">
-          <button class="btn btn-sm btn-ghost" onclick="editProduct(${product.id})"><i class="fa-solid fa-pen"></i> S?a</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})"><i class="fa-solid fa-trash"></i> X�a</button>
+          <button class="btn btn-sm btn-ghost" onclick="editProduct(${product.id})"><i class="fa-solid fa-pen"></i> Sửa</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})"><i class="fa-solid fa-trash"></i> Xóa</button>
         </div>
       </td>
     </tr>
@@ -87,9 +85,9 @@ function initAdminForm() {
       resetForm();
       renderAdminTable();
       renderStats();
-      showToast(editId ? '�� c?p nh?t s?n ph?m' : '�� th�m s?n ph?m m?i');
+      showToast(editId ? 'Đã cập nhật sản phẩm' : 'Đã thêm sản phẩm mới');
     } catch (error) {
-      showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Kh�ng th? luu s?n ph?m'}`);
+      showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Không thể lưu sản phẩm'}`);
     }
   });
 }
@@ -108,7 +106,7 @@ function buildProductFromForm(data, editId = null) {
     oldPrice: Number(data.get('oldPrice')) || null,
     stock: Number(data.get('stock')),
     badge,
-    badgeText: { new: 'M?i', hot: 'Hot', sale: 'Gi?m gi�', bestseller: 'Best Seller' }[badge],
+    badgeText: { new: 'Mới', hot: 'Hot', sale: 'Giảm giá', bestseller: 'Best Seller' }[badge],
     spec: data.get('spec'),
     desc: data.get('desc'),
     image,
@@ -153,11 +151,11 @@ function editProduct(id) {
   }
 
   form.closest('.admin-form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  showToast(`�ang s?a: ${product.name}`);
+  showToast(`Đang sửa: ${product.name}`);
 }
 
 async function deleteProduct(id) {
-  if (!confirm('B?n c� ch?c mu?n x�a s?n ph?m n�y?')) return;
+  if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
 
   try {
     if (ApiClient.enabled()) {
@@ -168,9 +166,9 @@ async function deleteProduct(id) {
 
     renderAdminTable();
     renderStats();
-    showToast('�� x�a s?n ph?m');
+    showToast('Đã xóa sản phẩm');
   } catch (error) {
-    showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Kh�ng th? x�a s?n ph?m'}`);
+    showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Không thể xóa sản phẩm'}`);
   }
 }
 
@@ -182,12 +180,12 @@ function resetForm() {
 }
 
 function resetProducts() {
-  if (!confirm('Reset l?i d? li?u local v? m?c d?nh?')) return;
+  if (!confirm('Reset lại dữ liệu local về mặc định?')) return;
   localStorage.removeItem(STORAGE_KEYS.products);
   ApiState.products = null;
   renderAdminTable();
   renderStats();
-  showToast('�� reset d? li?u local');
+  showToast('Đã reset dữ liệu local');
 }
 
 function initAdminSearch() {
