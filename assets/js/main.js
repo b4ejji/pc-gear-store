@@ -1,11 +1,8 @@
 // MAIN.JS - Shared logic for all pages
 
 onAppReady(() => {
-<<<<<<< HEAD
   initHeaderAuth();
   initAdminLinks();
-=======
->>>>>>> origin/main
   updateCartCount();
   updateWishlistCount();
   buildMegaMenu();
