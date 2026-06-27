@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', renderWishlistPage);
+onAppReady(renderWishlistPage);
 
 function renderWishlistPage() {
   const container = document.querySelector('[data-wishlist-grid]');

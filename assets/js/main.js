@@ -1,6 +1,6 @@
 // MAIN.JS - Shared logic for all pages
 
-document.addEventListener('DOMContentLoaded', () => {
+onAppReady(() => {
   updateCartCount();
   updateWishlistCount();
   buildMegaMenu();

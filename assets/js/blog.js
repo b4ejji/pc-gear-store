@@ -1,6 +1,6 @@
 // BLOG.JS - Blog page logic
 
-document.addEventListener('DOMContentLoaded', () => {
+onAppReady(() => {
   renderBlog();
   initBlogFilter();
 });
