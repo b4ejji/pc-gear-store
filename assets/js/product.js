@@ -1,6 +1,6 @@
 // PRODUCT.JS - Product detail page logic
 
-document.addEventListener('DOMContentLoaded', () => {
+onAppReady(() => {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get('id'));
   const products = getProducts();
@@ -46,7 +46,7 @@ function renderDetail(p) {
     <!-- Gallery -->
     <div class="detail-gallery">
       <div class="detail-main-image">
-        ${p.badge ? `<span class="product-badge ${p.badge}">${p.badgeText || p.badge}</span>` : ''}
+        ${p.badge ? `<span class="product-badge ${p.badge}">${getBadgeText(p)}</span>` : ''}
         <img src="${p.image}" alt="${p.name}" id="detail-main-img">
       </div>
       <div class="detail-thumbnails">

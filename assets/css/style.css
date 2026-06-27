@@ -192,6 +192,8 @@ ol {
 }
 
 .header-main {
+  position: relative;
+  z-index: 120;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -3085,4 +3087,112 @@ select option {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 24px;
+}
+.header-action.is-authenticated {
+  min-width: 72px;
+  max-width: 92px;
+  padding: 8px 10px;
+  background: transparent;
+}
+
+.header-action.is-authenticated:hover {
+  background: transparent;
+}
+
+.header-action.is-authenticated .icon {
+  color: var(--primary);
+}
+
+.header-action.is-authenticated .label {
+  max-width: 76px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.auth-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 10000;
+  display: none;
+  min-width: 168px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+}
+
+.auth-menu.is-open {
+  display: block;
+}
+
+.auth-menu-name {
+  display: block;
+  padding: 4px 8px 8px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+
+.auth-menu-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.auth-menu-logout:hover {
+  background: var(--surface-2);
+}
+
+.auth-session-box {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.auth-session-icon {
+  color: var(--primary);
+  font-size: 42px;
+}
+
+.auth-session-box small {
+  color: var(--text-muted);
+}
+
+.auth-role {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+.admin-only-link {
+  display: none !important;
+}
+
+.admin-only-link.is-visible {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
 }

@@ -332,30 +332,83 @@ const STORAGE_KEYS = {
   products: 'pcgear_products',
   cart: 'pcgear_cart',
   wishlist: 'pcgear_wishlist',
-  coupon: 'pcgear_coupon'
+  wishlistGuest: 'pcgear_wishlist_guest',
+  coupon: 'pcgear_coupon',
+  session: 'pcgear_session',
+  user: 'pcgear_user'
 };
 
-// Set baseUrl to your PHP API root when backend endpoints are ready.
 const ApiClient = {
-  baseUrl: '',
+  baseUrl: 'backend',
 
   enabled() {
-    return Boolean(this.baseUrl);
+    return Boolean(this.baseUrl) && /^https?:$/.test(window.location.protocol);
   },
 
   async request(path, options = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+
     const response = await fetch(`${this.baseUrl}${path}`, {
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers,
+      credentials: 'same-origin',
       ...options
     });
 
     if (!response.ok) {
-      throw new Error(`API ${response.status}: ${response.statusText}`);
+      let message = `API ${response.status}: ${response.statusText}`;
+      try {
+        const error = await response.json();
+        if (error?.message) message = error.message;
+      } catch { }
+      throw new Error(message);
     }
 
     return response.status === 204 ? null : response.json();
+  },
+
+  async bootstrap() {
+    if (!this.enabled()) return;
+    try {
+      const products = await this.request('/products/list.php?per_page=50');
+      ApiState.products = products.data || [];
+    } catch (error) {
+      console.warn('Backend API unavailable, using local fallback.', error);
+    }
   }
 };
+
+const ApiState = {
+  products: null,
+  ready: null
+};
+
+function mapBlogPostFromApi(post) {
+  return {
+    id: Number(post.id),
+    title: post.title,
+    excerpt: post.excerpt || '',
+    category: post.category,
+    author: 'PC Gear',
+    date: String(post.published_at || post.created_at || '').slice(0, 10),
+    readTime: post.read_time ? `${post.read_time} phút` : '5 phút',
+    image: post.image || 'assets/img/gpu.svg'
+  };
+}
+
+function whenDomReady() {
+  if (document.readyState !== 'loading') return Promise.resolve();
+  return new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+}
+
+function onAppReady(callback) {
+  if (!ApiState.ready) {
+    ApiState.ready = Promise.all([whenDomReady(), ApiClient.bootstrap()]);
+  }
+  ApiState.ready.then(callback).catch(error => {
+    console.error(error);
+    callback();
+  });
+}
 
 // --- LocalStorage helpers ---
 
@@ -378,13 +431,17 @@ function writeStorage(key, value) {
 }
 
 function getProducts() {
+  if (Array.isArray(ApiState.products)) {
+    return cloneData(ApiState.products);
+  }
+
   const saved = localStorage.getItem(STORAGE_KEYS.products);
   if (!saved) {
     writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS);
     return cloneData(DEFAULT_PRODUCTS);
   }
-  try { 
-    const parsed = JSON.parse(saved); 
+  try {
+    const parsed = JSON.parse(saved);
     if (parsed.length === 0 || !parsed[0].specs || !parsed[0].desc) {
       writeStorage(STORAGE_KEYS.products, DEFAULT_PRODUCTS);
       return cloneData(DEFAULT_PRODUCTS);
@@ -395,7 +452,79 @@ function getProducts() {
 }
 
 function saveProducts(products) {
+  ApiState.products = cloneData(products);
   writeStorage(STORAGE_KEYS.products, products);
+}
+
+function getAuthSession() {
+  return localStorage.getItem(STORAGE_KEYS.session);
+}
+
+function getCurrentUser() {
+  return readStorage(STORAGE_KEYS.user, null);
+}
+
+function saveAuthSession({ user }) {
+  if (user) localStorage.setItem(STORAGE_KEYS.session, '1');
+  if (user) writeStorage(STORAGE_KEYS.user, user);
+}
+
+function clearAuthSession() {
+  if (ApiClient.enabled()) {
+    ApiClient.request('/auth/logout.php', { method: 'POST' }).catch(error => {
+      console.warn('Logout failed.', error);
+    });
+  }
+  localStorage.removeItem(STORAGE_KEYS.session);
+  localStorage.removeItem(STORAGE_KEYS.user);
+}
+
+function getWishlistStorageKey(user = getCurrentUser()) {
+  return user?.id ? `${STORAGE_KEYS.wishlist}_user_${user.id}` : STORAGE_KEYS.wishlistGuest;
+}
+
+function logoutUser(redirect = 'index.html') {
+  clearAuthSession();
+  showToast('Đã đăng xuất');
+  setTimeout(() => { window.location.href = redirect; }, 500);
+}
+
+async function loginUser(email, password) {
+  const session = await ApiClient.request('/auth/login.php', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+  saveAuthSession(session);
+  return session.user;
+}
+
+async function registerUser(payload) {
+  const session = await ApiClient.request('/auth/login.php?action=register', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+  saveAuthSession(session);
+  return session.user;
+}
+
+async function saveProductToApi(product, id = null) {
+  if (!ApiClient.enabled()) return product;
+
+  const response = await ApiClient.request(id ? `/products/edit.php?id=${id}` : '/products/add.php', {
+    method: 'POST',
+    body: JSON.stringify(product)
+  });
+  ApiState.products = null;
+  await ApiClient.bootstrap();
+  return response.data;
+}
+
+async function deleteProductFromApi(id) {
+  if (!ApiClient.enabled()) return;
+
+  await ApiClient.request(`/products/delete.php?id=${id}`, { method: 'POST' });
+  ApiState.products = null;
+  await ApiClient.bootstrap();
 }
 
 function money(value) {
@@ -405,6 +534,20 @@ function money(value) {
 function getDiscount(price, oldPrice) {
   if (!oldPrice || oldPrice <= price) return 0;
   return Math.round(((oldPrice - price) / oldPrice) * 100);
+}
+
+function getBadgeText(product) {
+  const raw = String(product?.badgeText || product?.badge || '').trim();
+  const key = raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+  if (key === 'moi' || key === 'new') return 'MỚI';
+  if (key === 'hot') return 'HOT';
+  if (key === 'best seller' || key === 'bestseller') return 'BEST SELLER';
+  if (key === 'giam gia' || key === 'sale') return 'GIẢM GIÁ';
+  return raw || 'MỚI';
 }
 
 function getCart() {
@@ -423,7 +566,7 @@ function updateCartCount() {
   document.querySelectorAll('[data-cart-count]').forEach(el => el.textContent = count);
 }
 
-function addToCart(id, qty = 1) {
+async function addToCart(id, qty = 1) {
   const productId = Number(id);
   const product = getProducts().find(item => item.id === productId);
   if (!product) {
@@ -443,23 +586,66 @@ function addToCart(id, qty = 1) {
   if (found) { found.qty = Math.min(stock, found.qty + addQty); }
   else { cart.push({ id: productId, qty: Math.min(stock, addQty) }); }
   saveCart(cart);
+  syncCartItemToApi(productId, cart.find(item => item.id === productId)?.qty || addQty);
   showToast('Đã thêm vào giỏ hàng');
 }
 
+async function syncCartItemToApi(productId, quantity) {
+  if (!ApiClient.enabled() || !getAuthSession()) return;
+
+  try {
+    await ApiClient.request('/cart/add.php', {
+      method: 'POST',
+      body: JSON.stringify({ product_id: Number(productId), quantity: Number(quantity) })
+    });
+  } catch (error) {
+    console.warn('Cart sync failed.', error);
+  }
+}
+
+async function removeCartItemFromApi(productId) {
+  if (!ApiClient.enabled() || !getAuthSession()) return;
+
+  try {
+    await ApiClient.request(`/cart/remove.php?id=${productId}`, { method: 'POST' });
+  } catch (error) {
+    console.warn('Cart remove sync failed.', error);
+  }
+}
+
+async function clearCartFromApi() {
+  if (!ApiClient.enabled() || !getAuthSession()) return;
+
+  try {
+    await ApiClient.request('/cart/remove.php?all=1', { method: 'POST' });
+  } catch (error) {
+    console.warn('Cart clear sync failed.', error);
+  }
+}
+
 // Wishlist
+function normalizeIdList(list) {
+  return [...new Set((Array.isArray(list) ? list : []).map(Number).filter(Boolean))];
+}
+
 function getWishlist() {
-  return readStorage(STORAGE_KEYS.wishlist, []).map(Number).filter(Boolean);
+  return normalizeIdList(readStorage(getWishlistStorageKey(), []));
 }
 
 function saveWishlist(list) {
-  writeStorage(STORAGE_KEYS.wishlist, list);
+  writeStorage(getWishlistStorageKey(), normalizeIdList(list));
   updateWishlistCount();
 }
 
-function toggleWishlist(id) {
+async function loadWishlistFromApi() {
+  return getWishlist();
+}
+
+async function toggleWishlist(id) {
   let list = getWishlist();
   const numId = Number(id);
-  if (list.includes(numId)) {
+  const shouldRemove = list.includes(numId);
+  if (shouldRemove) {
     list = list.filter(i => i !== numId);
     showToast('<i class="fa-solid fa-circle-xmark"></i> Đã bỏ khỏi yêu thích');
   } else {
@@ -467,10 +653,15 @@ function toggleWishlist(id) {
     showToast('<i class="fa-solid fa-heart"></i> Đã thêm vào yêu thích');
   }
   saveWishlist(list);
+  syncWishlistToApi(numId, !shouldRemove);
   document.querySelectorAll(`[data-wishlist="${id}"]`).forEach(btn => {
     btn.classList.toggle('active', list.includes(numId));
     btn.innerHTML = list.includes(numId) ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
   });
+}
+
+async function syncWishlistToApi(productId, active) {
+  return;
 }
 
 function isInWishlist(id) {
@@ -502,6 +693,30 @@ function calculateCouponDiscount(coupon, subtotal) {
   return coupon.maxDiscount ? Math.min(discount, coupon.maxDiscount) : discount;
 }
 
+async function fetchCouponByCode(code, subtotal = 0) {
+  const normalized = String(code || '').trim().toUpperCase();
+  if (!normalized) return null;
+
+
+  return getCouponByCode(normalized);
+}
+
+async function createOrderFromCart(payload) {
+  if (!ApiClient.enabled()) {
+    throw new Error('Backend API chưa sẵn sàng.');
+  }
+  if (!getAuthSession()) {
+    throw new Error('Vui lòng đăng nhập để đặt hàng.');
+  }
+
+  const response = await ApiClient.request('/orders/checkout.php', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+
+  return response.data;
+}
+
 function showToast(message) {
   let toast = document.querySelector('.toast');
   if (!toast) { toast = document.createElement('div'); toast.className = 'toast'; document.body.appendChild(toast); }
@@ -529,3 +744,5 @@ function renderStars(rating) {
     (half ? '<i class="fa-solid fa-star-half-stroke"></i>' : '') +
     '<i class="fa-regular fa-star"></i>'.repeat(empty);
 }
+
+
