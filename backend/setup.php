@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 function setup_database(): array
 {
-    $config = require __DIR__ . '/../config.php';
-    $db = $config['db'];
+    require_once __DIR__ . '/config/db.php';
+    $db = db_config();
 
     $serverDsn = sprintf('mysql:host=%s;port=%s;charset=%s', $db['host'], $db['port'], $db['charset']);
     try {
@@ -26,7 +26,7 @@ function setup_database(): array
     $pdo->exec("USE `$database`");
 
     run_sql_file($pdo, __DIR__ . '/schema.sql');
-    seed_database($pdo, __DIR__ . '/../data/seed.json');
+    seed_database($pdo, __DIR__ . '/seed.json');
 
     return [
         'PC Gear Store backend ready.',
@@ -41,7 +41,12 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
             echo $line . PHP_EOL;
         }
     } catch (Throwable $e) {
-        fwrite(STDERR, $e->getMessage() . PHP_EOL);
+        if (PHP_SAPI === 'cli') {
+            fwrite(STDERR, $e->getMessage() . PHP_EOL);
+        } else {
+            http_response_code(500);
+            echo $e->getMessage();
+        }
         exit(1);
     }
 }

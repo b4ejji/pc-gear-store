@@ -32,9 +32,9 @@ function renderCartPage() {
   if (!cartItems.length) {
     listEl.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
       <div class="empty-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-      <h2>Giỏ hàng trống</h2>
-      <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
-      <a class="btn btn-primary btn-lg" href="products.html"><i class="fa-solid fa-arrow-left"></i> Mua sắm ngay</a>
+      <h2>Gi? h�ng tr?ng</h2>
+      <p>B?n chua th�m s?n ph?m n�o v�o gi? h�ng.</p>
+      <a class="btn btn-primary btn-lg" href="products.html"><i class="fa-solid fa-arrow-left"></i> Mua s?m ngay</a>
     </div>`;
     summaryEl.innerHTML = '';
     return;
@@ -68,13 +68,13 @@ function renderCartPage() {
         </div>
       </td>
       <td class="text-price">${money(itemTotal)}</td>
-      <td><button class="remove-btn" onclick="removeFromCart(${product.id})"><i class="fa-solid fa-xmark"></i> Xóa</button></td>
+      <td><button class="remove-btn" onclick="removeFromCart(${product.id})"><i class="fa-solid fa-xmark"></i> X�a</button></td>
     </tr>`;
   }).join('');
 
   listEl.innerHTML = `<table class="cart-table">
     <thead>
-      <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th></th></tr>
+      <tr><th>S?n ph?m</th><th>�on gi�</th><th>S? lu?ng</th><th>Th�nh ti?n</th><th></th></tr>
     </thead>
     <tbody>${rows}</tbody>
   </table>`;
@@ -90,43 +90,43 @@ function renderCartSummary(summaryEl, subtotal, itemCount) {
   const user = getCurrentUser() || {};
 
   summaryEl.innerHTML = `<div class="cart-summary">
-    <h3>Tóm tắt đơn hàng</h3>
-    <div class="summary-row"><span>Tạm tính (${itemCount} sản phẩm)</span><strong>${money(subtotal)}</strong></div>
-    <div class="summary-row"><span>Phí vận chuyển</span><strong>${shipping === 0 ? '<span class="text-success">Miễn phí</span>' : money(shipping)}</strong></div>
-    ${coupon ? `<div class="summary-row"><span>Mã ${coupon.code}</span><strong class="text-success">-${money(discount)}</strong></div>` : ''}
-    ${shipping > 0 ? `<p style="font-size:12px;color:var(--text-muted);margin-top:4px"><i class="fa-solid fa-bolt"></i> Mua thêm <strong>${money(10000000 - subtotal)}</strong> để được miễn phí vận chuyển.</p>` : ''}
+    <h3>T�m t?t don h�ng</h3>
+    <div class="summary-row"><span>T?m t�nh (${itemCount} s?n ph?m)</span><strong>${money(subtotal)}</strong></div>
+    <div class="summary-row"><span>Ph� v?n chuy?n</span><strong>${shipping === 0 ? '<span class="text-success">Mi?n ph�</span>' : money(shipping)}</strong></div>
+    ${coupon ? `<div class="summary-row"><span>M� ${coupon.code}</span><strong class="text-success">-${money(discount)}</strong></div>` : ''}
+    ${shipping > 0 ? `<p style="font-size:12px;color:var(--text-muted);margin-top:4px"><i class="fa-solid fa-bolt"></i> Mua th�m <strong>${money(10000000 - subtotal)}</strong> d? du?c mi?n ph� v?n chuy?n.</p>` : ''}
 
     <div class="coupon-box">
-      <input type="text" placeholder="Mã giảm giá" id="coupon-input" value="${coupon?.code || ''}">
-      <button class="btn btn-primary btn-sm" onclick="applyCoupon()">Áp dụng</button>
+      <input type="text" placeholder="M� gi?m gi�" id="coupon-input" value="${coupon?.code || ''}">
+      <button class="btn btn-primary btn-sm" onclick="applyCoupon()">�p d?ng</button>
     </div>
 
     <form class="checkout-form" data-checkout-form style="display:grid;gap:10px;margin-top:16px">
-      <h4 style="margin:0;color:var(--text)">Thông tin giao hàng</h4>
-      <input class="form-input" name="receiverName" placeholder="Họ và tên người nhận" value="${escapeAttr(user.fullname || '')}" required>
-      <input class="form-input" name="receiverPhone" placeholder="Số điện thoại" value="${escapeAttr(user.phone || '')}" required>
+      <h4 style="margin:0;color:var(--text)">Th�ng tin giao h�ng</h4>
+      <input class="form-input" name="receiverName" placeholder="H? v� t�n ngu?i nh?n" value="${escapeAttr(user.fullname || '')}" required>
+      <input class="form-input" name="receiverPhone" placeholder="S? di?n tho?i" value="${escapeAttr(user.phone || '')}" required>
       <select name="province" class="form-input" data-province-select required>
-        <option value="">Đang tải tỉnh/thành...</option>
+        <option value="">�ang t?i t?nh/th�nh...</option>
       </select>
       <select name="ward" class="form-input" data-ward-select required disabled>
-        <option value="">Chọn tỉnh/thành trước</option>
+        <option value="">Ch?n t?nh/th�nh tru?c</option>
       </select>
-      <input class="form-input" name="addressDetail" placeholder="Số nhà, tên đường, tòa nhà..." required>
-      <textarea class="form-input" name="note" placeholder="Ghi chú giao hàng (không bắt buộc)" style="min-height:76px"></textarea>
+      <input class="form-input" name="addressDetail" placeholder="S? nh�, t�n du?ng, t�a nh�..." required>
+      <textarea class="form-input" name="note" placeholder="Ghi ch� giao h�ng (kh�ng b?t bu?c)" style="min-height:76px"></textarea>
       <select name="paymentMethod" class="form-input">
-        <option value="cod">Thanh toán khi nhận hàng (COD)</option>
-        <option value="banking">Chuyển khoản ngân hàng</option>
-        <option value="momo">Ví MoMo</option>
+        <option value="cod">Thanh to�n khi nh?n h�ng (COD)</option>
+        <option value="banking">Chuy?n kho?n ng�n h�ng</option>
+        <option value="momo">V� MoMo</option>
       </select>
-      <small data-address-status style="color:var(--text-muted)">Provinces Open API v2 dùng mô hình Tỉnh/Thành -> Phường/Xã sau sáp nhập, không còn cấp Quận/Huyện.</small>
+      <small data-address-status style="color:var(--text-muted)">Ch?n t?nh/th�nh ph? r?i ch?n phu?ng/x� giao h�ng.</small>
     </form>
 
     <div class="summary-total">
-      <span>Tổng cộng</span>
+      <span>T?ng c?ng</span>
       <span class="amount">${money(total)}</span>
     </div>
-    <button class="btn btn-accent btn-lg btn-full" style="margin-top:14px" onclick="handleCheckout()">Đặt hàng</button>
-    <a href="products.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--primary);font-weight:600"><i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm</a>
+    <button class="btn btn-accent btn-lg btn-full" style="margin-top:14px" onclick="handleCheckout()">�?t h�ng</button>
+    <a href="products.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--primary);font-weight:600"><i class="fa-solid fa-arrow-left"></i> Ti?p t?c mua s?m</a>
   </div>`;
 
   initCheckoutAddressForm();
@@ -148,7 +148,7 @@ async function initCheckoutAddressForm() {
 
   try {
     const provinces = await loadProvinces();
-    provinceSelect.innerHTML = '<option value="">Chọn tỉnh/thành</option>' +
+    provinceSelect.innerHTML = '<option value="">Ch?n t?nh/th�nh</option>' +
       provinces.map(province => `<option value="${province.code}">${province.name}</option>`).join('');
 
     if (CheckoutAddressState.provinceCode) {
@@ -162,10 +162,10 @@ async function initCheckoutAddressForm() {
       await renderWardOptions(provinceSelect.value);
     });
   } catch (error) {
-    provinceSelect.innerHTML = '<option value="">Không tải được tỉnh/thành</option>';
+    provinceSelect.innerHTML = '<option value="">Kh�ng t?i du?c t?nh/th�nh</option>';
     provinceSelect.required = false;
     wardSelect.required = false;
-    if (status) status.textContent = 'Không tải được dữ liệu địa chỉ. Bạn vẫn có thể nhập địa chỉ chi tiết.';
+    if (status) status.textContent = 'Kh�ng t?i du?c d? li?u d?a ch?. B?n v?n c� th? nh?p d?a ch? chi ti?t.';
     console.warn('Province API failed.', error);
   }
 }
@@ -174,7 +174,7 @@ async function loadProvinces() {
   if (CheckoutAddressState.provinces) return CheckoutAddressState.provinces;
 
   const response = await fetch(`${PROVINCES_API_BASE}/`);
-  if (!response.ok) throw new Error('Không tải được danh sách tỉnh/thành.');
+  if (!response.ok) throw new Error('Kh�ng t?i du?c danh s�ch t?nh/th�nh.');
 
   CheckoutAddressState.provinces = await response.json();
   return CheckoutAddressState.provinces;
@@ -187,7 +187,7 @@ async function loadWards(provinceCode) {
   }
 
   const response = await fetch(`${PROVINCES_API_BASE}/p/${provinceCode}?depth=2`);
-  if (!response.ok) throw new Error('Không tải được danh sách phường/xã.');
+  if (!response.ok) throw new Error('Kh�ng t?i du?c danh s�ch phu?ng/x�.');
 
   const province = await response.json();
   const wards = Array.isArray(province.wards) ? province.wards : [];
@@ -202,27 +202,27 @@ async function renderWardOptions(provinceCode) {
 
   if (!provinceCode) {
     wardSelect.disabled = true;
-    wardSelect.innerHTML = '<option value="">Chọn tỉnh/thành trước</option>';
+    wardSelect.innerHTML = '<option value="">Ch?n t?nh/th�nh tru?c</option>';
     return;
   }
 
   wardSelect.disabled = true;
-  wardSelect.innerHTML = '<option value="">Đang tải phường/xã...</option>';
+  wardSelect.innerHTML = '<option value="">�ang t?i phu?ng/x�...</option>';
 
   try {
     const wards = await loadWards(provinceCode);
-    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>' +
+    wardSelect.innerHTML = '<option value="">Ch?n phu?ng/x�</option>' +
       wards.map(ward => `<option value="${ward.code}">${ward.name}</option>`).join('');
     wardSelect.disabled = false;
     if (CheckoutAddressState.wardCode) wardSelect.value = CheckoutAddressState.wardCode;
     wardSelect.addEventListener('change', () => {
       CheckoutAddressState.wardCode = wardSelect.value;
     });
-    if (status) status.textContent = 'Provinces Open API v2 dùng mô hình Tỉnh/Thành -> Phường/Xã sau sáp nhập.';
+    if (status) status.textContent = 'Ch?n t?nh/th�nh ph? r?i ch?n phu?ng/x� giao h�ng.';
   } catch (error) {
-    wardSelect.innerHTML = '<option value="">Không tải được phường/xã</option>';
+    wardSelect.innerHTML = '<option value="">Kh�ng t?i du?c phu?ng/x�</option>';
     wardSelect.required = false;
-    if (status) status.textContent = 'Không tải được phường/xã. Bạn vẫn có thể nhập địa chỉ chi tiết.';
+    if (status) status.textContent = 'Kh�ng t?i du?c phu?ng/x�. B?n v?n c� th? nh?p d?a ch? chi ti?t.';
     console.warn('Ward API failed.', error);
   }
 }
@@ -257,7 +257,7 @@ function removeFromCart(id) {
   saveCart(getCart().filter(item => item.id !== id));
   removeCartItemFromApi(id);
   renderCartPage();
-  showToast('Đã xóa sản phẩm khỏi giỏ hàng');
+  showToast('�� x�a s?n ph?m kh?i gi? h�ng');
 }
 
 async function applyCoupon() {
@@ -269,21 +269,21 @@ async function applyCoupon() {
   if (coupon && subtotal >= coupon.minOrderValue) {
     saveActiveCoupon(coupon.code);
     renderCartPage();
-    showToast(`<i class="fa-solid fa-gift"></i> Đã áp dụng mã ${coupon.code}`);
+    showToast(`<i class="fa-solid fa-gift"></i> �� �p d?ng m� ${coupon.code}`);
   } else if (coupon) {
     saveActiveCoupon('');
     renderCartPage();
-    showToast(`<i class="fa-solid fa-circle-xmark"></i> Đơn tối thiểu ${money(coupon.minOrderValue)}`);
+    showToast(`<i class="fa-solid fa-circle-xmark"></i> �on t?i thi?u ${money(coupon.minOrderValue)}`);
   } else if (code) {
     saveActiveCoupon('');
     renderCartPage();
-    showToast('<i class="fa-solid fa-circle-xmark"></i> Mã giảm giá không hợp lệ.');
+    showToast('<i class="fa-solid fa-circle-xmark"></i> M� gi?m gi� kh�ng h?p l?.');
   }
 }
 
 async function handleCheckout() {
-  if (!getAuthToken()) {
-    showToast('<i class="fa-solid fa-circle-xmark"></i> Vui lòng đăng nhập để đặt hàng');
+  if (!getAuthSession()) {
+    showToast('<i class="fa-solid fa-circle-xmark"></i> Vui l�ng dang nh?p d? d?t h�ng');
     setTimeout(() => window.location.href = 'login.html', 900);
     return;
   }
@@ -315,9 +315,9 @@ async function handleCheckout() {
     saveActiveCoupon('');
     clearCartFromApi();
     renderCartPage();
-    showToast(`<i class="fa-solid fa-circle-check"></i> Đặt hàng thành công: ${order.order_code}`);
+    showToast(`<i class="fa-solid fa-circle-check"></i> �?t h�ng th�nh c�ng: ${order.order_code}`);
   } catch (error) {
-    showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Không thể đặt hàng'}`);
+    showToast(`<i class="fa-solid fa-circle-xmark"></i> ${error.message || 'Kh�ng th? d?t h�ng'}`);
   }
 }
 
@@ -325,3 +325,4 @@ function getSelectedText(select) {
   if (!select || !select.value) return '';
   return select.options[select.selectedIndex]?.textContent.trim() || '';
 }
+

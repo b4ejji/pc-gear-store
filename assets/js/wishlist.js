@@ -1,4 +1,7 @@
-onAppReady(renderWishlistPage);
+onAppReady(async () => {
+  await loadWishlistFromApi();
+  renderWishlistPage();
+});
 
 function renderWishlistPage() {
   const container = document.querySelector('[data-wishlist-grid]');
@@ -6,7 +9,7 @@ function renderWishlistPage() {
 
   const wishlistIds = getWishlist();
   const allProducts = getProducts();
-  const wishlistedProducts = allProducts.filter(p => wishlistIds.includes(p.id));
+  const wishlistedProducts = allProducts.filter(product => wishlistIds.includes(product.id));
 
   if (!wishlistedProducts.length) {
     container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">

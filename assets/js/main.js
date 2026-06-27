@@ -1,6 +1,8 @@
 // MAIN.JS - Shared logic for all pages
 
 onAppReady(() => {
+  initHeaderAuth();
+  initAdminLinks();
   updateCartCount();
   updateWishlistCount();
   buildMegaMenu();
@@ -9,6 +11,56 @@ onAppReady(() => {
   initHomepageSections();
 });
 
+function initAdminLinks() {
+  const user = getCurrentUser();
+  const isAdmin = user?.role === 'admin';
+  document.querySelectorAll('.admin-only-link').forEach(link => {
+    link.classList.toggle('is-visible', isAdmin);
+    link.setAttribute('aria-hidden', isAdmin ? 'false' : 'true');
+    link.tabIndex = isAdmin ? 0 : -1;
+  });
+}
+function initHeaderAuth() {
+  const user = getCurrentUser();
+  document.querySelectorAll('.header-actions a[href="login.html"]').forEach(link => {
+    if (!user) {
+      link.innerHTML = '<span class="icon"><i class="fa-solid fa-user"></i></span><span class="label">Tài khoản</span>';
+      return;
+    }
+
+    const name = user.fullname || user.email || 'Tài khoản';
+    const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
+    const displayName = nameParts.length > 2 ? nameParts.slice(-2).join(' ') : name;
+    const shortName = displayName.length > 12 ? `${displayName.slice(0, 11)}…` : displayName;
+    link.href = '#';
+    link.classList.add('is-authenticated');
+    link.title = `${name} - Tài khoản`;
+    link.innerHTML = `
+      <span class="icon"><i class="fa-solid fa-circle-user"></i></span>
+      <span class="label">${shortName}</span>
+      <span class="auth-menu" role="menu">
+        <span class="auth-menu-name">${shortName}</span>
+        <button type="button" class="auth-menu-logout" role="menuitem">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Đăng xuất
+        </button>
+      </span>
+    `;
+    const menu = link.querySelector('.auth-menu');
+    const logoutButton = link.querySelector('.auth-menu-logout');
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      menu?.classList.toggle('is-open');
+    });
+    logoutButton?.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      logoutUser('login.html');
+    });
+    document.addEventListener('click', () => menu?.classList.remove('is-open'));
+  });
+}
 // MEGA MENU (Shared)
 function buildMegaMenu() {
   const menu = document.getElementById('mega-menu-pc');
@@ -151,7 +203,7 @@ function renderProductCard(p) {
   const disc = getDiscount(p.price, p.oldPrice);
   const wl = isInWishlist(p.id);
   const badgeClass = p.badge || 'new';
-  const badgeText = p.badgeText || 'Mới';
+  const badgeText = getBadgeText(p);
 
   return `<article class="product-card">
     <div class="product-card-image">
